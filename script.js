@@ -7,8 +7,8 @@
  */
 
 const CONFIG = {
-    apiEndpoint: 'http://127.0.0.1:5000/predict',
-    logsEndpoint: 'http://127.0.0.1:5000/get_all_logs',
+    apiEndpoint: 'https://synapse-os-api-jubair.onrender.com/predict',
+    logsEndpoint: 'https://synapse-os-api-jubair.onrender.com/get_all_logs',
     colors: { 
         safe: '#10b981', 
         warning: '#f59e0b', 
