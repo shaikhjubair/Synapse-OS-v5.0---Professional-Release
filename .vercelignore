@@ -1,0 +1,8 @@
+requirements.txt
+app.py
+database.py
+saved_ai_models/
+system_check.py
+*.pkl
+*.db
+.venv-1/
