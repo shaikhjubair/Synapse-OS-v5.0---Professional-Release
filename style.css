@@ -1,0 +1,1511 @@
+/* ==========================================================================
+   PROJECT: SYNAPSE OS (v5.0 PRO) - ULTIMATE MASTER CSS
+   THEME: PREMIUM GLASSMORPHISM / DYNAMIC DARK MODE / NEURAL ANIMATIONS
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. DESIGN TOKENS & BASE (COLOR PALETTE & FONTS)
+   -------------------------------------------------------------------------- */
+:root {
+    /* সফট ক্লিনিক্যাল কালার প্যালেট */
+    --bg-body: #f0f4f9; 
+    --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.5);
+    --glass-shadow: 0 12px 40px rgba(0, 0, 0, 0.04);
+    
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --primary: #2563eb;
+    --primary-glow: rgba(37, 99, 235, 0.25);
+    --success: #059669;
+    --warning: #d97706;
+    --danger: #dc2626;
+    
+    /* রাউন্ডেড কর্নার - একদম আধুনিক লুকের জন্য */
+    --radius-lg: 22px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
+    --font-ui: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+body.theme-dark {
+    --bg-body: #050a18; /* ডিপ নেভি ব্লু (আইসিইউ মনিটরের মতো) */
+    --glass-bg: rgba(15, 23, 42, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    --primary: #3b82f6;
+    --primary-glow: rgba(59, 130, 246, 0.4);
+}
+
+body {
+    font-family: var(--font-ui);
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    transition: all 0.4s ease;
+    /* হালকা গ্রিড ব্যাকগ্রাউন্ড - টেক ভাইব দেওয়ার জন্য */
+    background-image: 
+        radial-gradient(circle at 2px 2px, rgba(0,0,0,0.02) 1px, transparent 0);
+    background-size: 40px 40px;
+}
+body.theme-dark {
+    background-image: 
+        radial-gradient(circle at 2px 2px, rgba(255,255,255,0.03) 1px, transparent 0);
+}
+
+.hidden { display: none !important; }
+
+/* --- Premium Glassmorphism Utilities --- */
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius-lg);
+    transition: all 0.3s ease;
+}
+
+.glass-panel-sm {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--glass-border);
+}
+
+/* --------------------------------------------------------------------------
+   2. SYSTEM BOOT LOADER
+   -------------------------------------------------------------------------- */
+.loader-overlay {
+    position: fixed; inset: 0; z-index: 9999;
+    background: var(--bg-body);
+    display: flex; justify-content: center; align-items: center;
+    transition: opacity 0.6s ease;
+}
+.loader-content { 
+    text-align: center; display: flex; flex-direction: column; 
+    align-items: center; gap: 15px; 
+}
+.pulse-icon { 
+    font-size: 4rem; color: var(--primary); 
+    animation: premiumHeartbeat 1.5s infinite; 
+}
+.loader-content h2 { font-size: 1.8rem; font-weight: 800; letter-spacing: 1px; color: var(--text-main); margin: 0; }
+.loader-content p { color: var(--text-muted); font-size: 0.95rem; font-weight: 600; }
+.progress-bar { 
+    width: 250px; height: 6px; background: rgba(0,0,0,0.05); 
+    border-radius: 10px; overflow: hidden; margin-top: 10px; 
+    border: 1px solid var(--glass-border);
+}
+body.theme-dark .progress-bar { background: rgba(255,255,255,0.05); }
+.progress-fill { 
+    height: 100%; background: var(--primary); width: 0%; 
+    animation: loadLine 2s cubic-bezier(0.4, 0, 0.2, 1) forwards; 
+    box-shadow: 0 0 10px var(--primary-glow);
+}
+
+/* --------------------------------------------------------------------------
+   3. APP LAYOUT & SIDEBAR (LEFT MENU)
+   -------------------------------------------------------------------------- */
+.app-layout {
+    display: flex; height: 100vh; width: 100vw; overflow: hidden;
+}
+
+/* Sidebar Core */
+.sidebar {
+    width: 280px; min-width: 280px; flex-shrink: 0; 
+    display: flex; flex-direction: column;
+    z-index: 50; padding: 0 20px;
+    border-right: 1px solid var(--glass-border);
+    border-radius: 0; /* Attach smoothly to the left edge */
+}
+
+/* Sidebar Brand & Logo */
+.sidebar-brand {
+    height: 90px; padding: 0 24px;
+    display: flex; align-items: center; gap: 14px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.brand-icon-wrapper {
+    width: 46px; height: 46px; 
+    background: linear-gradient(135deg, var(--primary), #1d4ed8);
+    color: white; border-radius: 12px;
+    display: flex; justify-content: center; align-items: center;
+    font-size: 1.6rem; 
+    box-shadow: 0 8px 16px var(--primary-glow);
+    animation: premiumHeartbeat 2s infinite; /* ব্র্যান্ড আইকন কাঁপবে */
+}
+
+.nav-item {
+    padding: 14px 18px; margin: 4px 0;
+    border-radius: var(--radius-md);
+    font-weight: 600; font-size: 0.9rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-item:hover {
+    background: rgba(37, 99, 235, 0.08);
+    color: var(--primary);
+    transform: translateX(5px); /* হালকা ডানদিকে সরবে */
+}
+
+.nav-item.active {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 8px 20px var(--primary-glow);
+}
+/* Sidebar Navigation Links */
+.sidebar-nav-scroll { flex: 1; overflow-y: auto; padding-right: 5px; }
+.sidebar-nav-scroll::-webkit-scrollbar { width: 4px; }
+.sidebar-nav-scroll::-webkit-scrollbar-track { background: transparent; }
+.sidebar-nav-scroll::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 4px; }
+body.theme-dark .sidebar-nav-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
+
+.nav-section { margin-bottom: 35px; }
+.section-label { 
+    font-size: 0.7rem; font-weight: 800; color: var(--text-muted); 
+    letter-spacing: 1.2px; margin-bottom: 15px; display: block; padding-left: 12px; 
+}
+.nav-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.nav-item {
+    display: flex; align-items: center; gap: 14px;
+    text-decoration: none; color: var(--text-muted);
+    padding: 12px 16px; border-radius: var(--radius-md);
+    font-weight: 700; font-size: 0.95rem; transition: all 0.3s;
+}
+.nav-item i { font-size: 1.2rem; transition: 0.3s; }
+.nav-item:hover { background: rgba(0,0,0,0.03); color: var(--text-main); transform: translateX(4px); }
+body.theme-dark .nav-item:hover { background: rgba(255,255,255,0.05); }
+
+/* Active Menu State */
+.nav-item.active { 
+    background: var(--primary); color: white; 
+    box-shadow: 0 4px 15px var(--primary-glow); 
+}
+.nav-item.active i { color: white; }
+
+/* Badges inside Menu */
+.badge-count, .badge-new { 
+    margin-left: auto; font-size: 0.7rem; padding: 3px 10px; 
+    border-radius: 20px; font-weight: 800; 
+}
+.badge-count { background: rgba(0,0,0,0.08); color: var(--text-main); }
+body.theme-dark .badge-count { background: rgba(255,255,255,0.1); }
+.nav-item.active .badge-count { background: rgba(255,255,255,0.25); color: white; }
+.badge-new { background: var(--warning); color: white; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4); }
+
+/* Sidebar User Widget */
+.sidebar-user-widget { 
+    display: flex; align-items: center; gap: 12px; padding: 20px 0; 
+    border-top: 1px solid var(--glass-border); 
+}
+.avatar-img { width: 42px; height: 42px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+.user-details { display: flex; flex-direction: column; flex: 1; }
+.user-name { font-weight: 800; font-size: 0.9rem; color: var(--text-main); }
+.user-role { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); }
+.btn-logout { 
+    background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); 
+    color: var(--danger); font-size: 1.2rem; cursor: pointer; transition: 0.3s;
+    width: 36px; height: 36px; border-radius: 10px; display: flex; justify-content: center; align-items: center;
+}
+.btn-logout:hover { background: var(--danger); color: white; transform: scale(1.05); }
+
+/* Server Status Marker */
+.server-status { 
+    padding: 10px 0 20px 0; font-size: 0.75rem; font-weight: 700; 
+    color: var(--text-muted); display: flex; align-items: center; gap: 8px; justify-content: center;
+}
+.status-dot.online { 
+    width: 8px; height: 8px; background: var(--success); 
+    border-radius: 50%; box-shadow: 0 0 8px var(--success);
+    animation: heartbeat 2s infinite;
+}
+
+/* --------------------------------------------------------------------------
+   4. MAIN WORKSPACE & HEADER (TOP NAVIGATION)
+   -------------------------------------------------------------------------- */
+.main-wrapper { 
+    flex: 1; min-width: 0; display: flex; flex-direction: column; 
+    height: 100vh; overflow: hidden; background: var(--bg-body); 
+}
+
+/* Top Header Bar */
+/* --- Top Header Fix --- */
+.top-header {
+    height: 100px; /* হাইট নির্দিষ্ট রাখা হলো */
+    min-height: 100px;
+    padding: 20px 32px 0 32px; /* ওপরের প্যাডিং বাড়ানো হলো যাতে লেখা না কাটে */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: transparent;
+    border-bottom: 1px solid var(--glass-border);
+    z-index: 10;
+    margin-top: 0; /* নিশ্চিত করা হলো কোনো নেগেটিভ মার্জিন নেই */
+}
+
+/* Workspace Area Fix */
+.workspace-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 32px 40px 32px; /* চারপাশের স্পেসিং ঠিক করা হলো */
+    display: block;
+    margin-top: 10px; /* হেডার থেকে একটু দূরত্ব রাখা হলো */
+}
+
+/* Page Title Adjustment */
+.page-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    line-height: 1.2; /* লাইন হাইট ফিক্স */
+}
+
+.header-left { display: flex; flex-direction: column; gap: 4px; }
+.page-title { 
+    font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; 
+    color: var(--text-main); display: flex; align-items: center; 
+}
+.live-clock { 
+    font-size: 0.85rem; color: var(--text-muted); 
+    font-family: var(--font-mono); font-weight: 600; 
+    display: flex; align-items: center; gap: 6px;
+}
+
+.header-right { display: flex; align-items: center; gap: 20px; }
+
+/* Global Search Widget */
+.search-widget { position: relative; }
+.search-widget input {
+    width: 320px; padding: 14px 16px 14px 45px;
+    border-radius: 50px; border: 1px solid var(--glass-border);
+    background: rgba(255,255,255,0.6); color: var(--text-main);
+    font-family: inherit; font-size: 0.95rem; font-weight: 600;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
+}
+body.theme-dark .search-widget input { background: rgba(0,0,0,0.2); }
+.search-widget input:focus { 
+    width: 400px; background: var(--bg-body); 
+    border-color: var(--primary); 
+    box-shadow: 0 0 0 4px var(--primary-glow), inset 0 2px 5px rgba(0,0,0,0.02); 
+}
+.search-icon { 
+    position: absolute; left: 18px; top: 50%; transform: translateY(-50%); 
+    color: var(--text-muted); font-size: 1.2rem; 
+}
+
+/* Quick Tools & Buttons */
+.quick-tools { display: flex; align-items: center; gap: 12px; }
+.tool-btn {
+    width: 45px; height: 45px; border-radius: 50%;
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    color: var(--text-main); font-size: 1.3rem; cursor: pointer;
+    display: flex; justify-content: center; align-items: center; 
+    transition: all 0.3s; box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+}
+.tool-btn:hover { 
+    transform: translateY(-3px); color: var(--primary);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.08); 
+}
+
+/* Notification Badge */
+.notification-wrapper { position: relative; }
+.notif-badge {
+    position: absolute; top: 0; right: 0;
+    background: var(--danger); color: white;
+    font-size: 0.65rem; font-weight: 800; font-family: var(--font-mono);
+    width: 18px; height: 18px; border-radius: 50%;
+    display: flex; justify-content: center; align-items: center;
+    border: 2px solid var(--bg-body);
+}
+
+/* Code Blue (Emergency) Button */
+.btn-danger-glow {
+    background: var(--danger); color: white; border: none;
+    padding: 12px 24px; border-radius: 50px; font-weight: 800;
+    display: flex; align-items: center; gap: 8px; cursor: pointer;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); transition: all 0.3s;
+    animation: dangerPulse 2s infinite; font-size: 0.95rem; letter-spacing: 0.5px;
+}
+.btn-danger-glow:hover { background: #dc2626; transform: scale(1.05); }
+
+/* --------------------------------------------------------------------------
+   5. DASHBOARD GRID LAYOUT & CARD BASE
+   -------------------------------------------------------------------------- */
+.workspace-scroll { 
+    flex: 1; overflow-y: auto; padding: 30px; display: block; 
+}
+
+/* Custom Scrollbar for Workspace */
+.workspace-scroll::-webkit-scrollbar { width: 8px; }
+.workspace-scroll::-webkit-scrollbar-track { background: transparent; }
+.workspace-scroll::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 10px; }
+body.theme-dark .workspace-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); }
+
+/* --- Premium 3-Column Dashboard Layout --- */
+.dashboard-grid {
+    display: grid; gap: 24px; width: 100%;
+    max-width: 1800px; margin: 0 auto;
+}
+
+@media (min-width: 1200px) {
+    .dashboard-grid.layout-3-col {
+        /* Left: Patient info (Fixed 360px), Center: Vitals (Fluid), Right: AI Results (Fixed 400px) */
+        grid-template-columns: 360px 1fr 400px; 
+        grid-template-areas: "left center right";
+        align-items: start;
+    }
+    .left-panel { grid-area: left; }
+    .center-panel { grid-area: center; }
+    .right-panel { grid-area: right; }
+}
+
+.grid-col { display: flex; flex-direction: column; gap: 24px; }
+
+/* General Card Styling */
+.card { 
+    display: flex; flex-direction: column; overflow: hidden; 
+    border-radius: var(--radius-lg);
+}
+.card-header { 
+    padding: 18px 24px; display: flex; justify-content: space-between; 
+    align-items: center; background: rgba(0,0,0,0.01);
+}
+body.theme-dark .card-header { background: rgba(255,255,255,0.02); }
+.card-header h3 { font-size: 1.05rem; font-weight: 800; margin: 0; color: var(--text-main); }
+.border-bottom { border-bottom: 1px solid var(--glass-border); }
+
+.card-body { padding: 24px; flex: 1; display: flex; flex-direction: column; }
+.card-footer { 
+    padding: 18px 24px; border-top: 1px solid var(--glass-border); 
+    background: rgba(0,0,0,0.01);
+}
+body.theme-dark .card-footer { background: rgba(255,255,255,0.02); }
+
+/* Small Icon Buttons in Cards */
+.icon-btn { 
+    background: rgba(0,0,0,0.04); border: none; color: var(--text-muted); 
+    cursor: pointer; font-size: 1.1rem; width: 32px; height: 32px; 
+    border-radius: 8px; display: flex; justify-content: center; align-items: center;
+    transition: all 0.2s;
+}
+body.theme-dark .icon-btn { background: rgba(255,255,255,0.05); }
+.icon-btn:hover { background: var(--primary); color: white; transform: translateY(-2px); }
+
+/* --------------------------------------------------------------------------
+   6. FORM ELEMENTS & PATIENT CONTEXT
+   -------------------------------------------------------------------------- */
+.form-grid { display: flex; flex-direction: column; gap: 18px; }
+.input-group { display: flex; flex-direction: column; gap: 8px; }
+.split-group { flex-direction: row; gap: 15px; }
+.sub-group { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+
+.input-group label, .sub-group label { 
+    font-size: 0.75rem; font-weight: 800; color: var(--text-muted); 
+    text-transform: uppercase; letter-spacing: 0.5px; 
+}
+
+/* Premium Input Fields */
+.input-field {
+    width: 100%; padding: 12px 16px; border-radius: 10px;
+    border: 1px solid var(--glass-border); 
+    background: rgba(255,255,255,0.5); color: var(--text-main); 
+    font-size: 0.95rem; font-family: inherit; font-weight: 700;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.01);
+}
+body.theme-dark .input-field { background: rgba(0,0,0,0.2); }
+
+.input-field:focus { 
+    background: var(--bg-body); border-color: var(--primary); 
+    box-shadow: 0 0 0 4px var(--primary-glow), inset 0 2px 4px rgba(0,0,0,0.01); 
+}
+
+.read-only-box { 
+    padding: 12px 16px; border-radius: 10px; background: rgba(0,0,0,0.03); 
+    border: 1px dashed var(--glass-border); color: var(--text-main); 
+    font-family: var(--font-mono); font-weight: 800; 
+    display: flex; align-items: center; gap: 10px; 
+}
+body.theme-dark .read-only-box { background: rgba(255,255,255,0.02); }
+
+/* Custom Select Dropdown */
+.custom-select-wrapper { position: relative; }
+.select-icon { 
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%); 
+    color: var(--primary); font-size: 1.2rem; pointer-events: none; 
+}
+.select-large { padding-left: 42px; font-size: 1rem; cursor: pointer; appearance: none; }
+
+.vitals-grid {
+    display: grid; gap: 18px;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+}
+
+.vital-box {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    padding: 22px 18px;
+    border-radius: var(--radius-md);
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+/* বক্সের ওপর একটা গ্লাসি শাইন ইফেক্ট */
+.vital-box::before {
+    content: ""; position: absolute; top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    opacity: 0; transition: 0.5s;
+}
+
+.vital-box:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+}
+
+.vital-box:hover::before { opacity: 1; }
+
+.vb-icon {
+    font-size: 1.6rem; color: var(--primary);
+    margin-bottom: 12px;
+    filter: drop-shadow(0 4px 8px var(--primary-glow));
+}
+
+.vb-label { 
+    display: block; font-size: 0.7rem; font-weight: 800; 
+    color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; 
+}
+.vb-input { 
+    width: 100%; font-size: 1.8rem; font-weight: 800; font-family: var(--font-ui); 
+    color: var(--text-main); background: transparent; border: none; 
+    text-align: center; padding: 0; letter-spacing: -0.5px;
+}
+
+/* --------------------------------------------------------------------------
+   8. MEGA ACTION BUTTON (AI INITIALIZATION)
+   -------------------------------------------------------------------------- */
+.form-actions { display: flex; flex-direction: column; gap: 12px; }
+.action-status { font-size: 0.85rem; font-weight: 700; color: var(--danger); text-align: center; min-height: 20px; }
+
+.btn-primary-mega {
+    min-height: 65px; width: 100%; padding: 0 25px;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); 
+    color: white; border: none; border-radius: var(--radius-md);
+    display: flex; justify-content: space-between; align-items: center; 
+    font-size: 1.05rem; font-weight: 800; cursor: pointer; 
+    box-shadow: 0 10px 25px var(--primary-glow); transition: all 0.3s;
+    overflow: hidden; position: relative;
+}
+.btn-primary-mega::after {
+    content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: 0.5s;
+}
+.btn-primary-mega:hover { transform: translateY(-2px); box-shadow: 0 15px 35px var(--primary-glow); }
+.btn-primary-mega:hover::after { left: 100%; }
+.btn-primary-mega:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+
+/* --------------------------------------------------------------------------
+   9. AI RISK GAUGE & RESULTS PANEL (RIGHT PANEL)
+   -------------------------------------------------------------------------- */
+.result-body { display: flex; flex-direction: column; align-items: center; }
+
+/* Circular Conic Gradient Gauge */
+.gauge-container { 
+    position: relative; width: 180px; height: 180px; 
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.08)); margin: 0 auto 20px auto; 
+}
+
+.risk-ring {
+    width: 190px; height: 190px; /* সাইজ একটু বাড়ানো হলো */
+    border-radius: 50%;
+    background: conic-gradient(var(--c) calc(var(--p) * 1%), #e2e8f0 0deg);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 30px rgba(0,0,0,0.05);
+}
+
+.ring-center {
+    width: 84%; height: 84%;
+    background: var(--bg-body); border-radius: 50%;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center;
+    border: 1px solid var(--glass-border);
+}
+
+.score-number {
+    font-size: 3.8rem; font-weight: 800; letter-spacing: -2px;
+}
+
+.ai-disease-name {
+    font-size: 1.7rem; font-weight: 800;
+    background: linear-gradient(90deg, var(--primary), #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; /* এআই দিয়ে জেনারেট হওয়া রোগের নাম কালারফুল হবে */
+}
+
+/* Status Text & Indicator */
+.risk-status { 
+    display: inline-flex; align-items: center; gap: 12px; padding: 10px 20px; 
+    background: rgba(0,0,0,0.03); border-radius: 50px; 
+    border: 1px solid var(--glass-border); margin: 10px 0 15px 0; 
+}
+body.theme-dark .risk-status { background: rgba(255,255,255,0.03); }
+.status-indicator { 
+    width: 12px; height: 12px; border-radius: 50%; 
+    background: var(--text-muted); transition: 0.5s;
+}
+.status-text-main { font-size: 1.2rem; font-weight: 800; color: var(--text-main); margin: 0; transition: 0.5s; }
+
+/* ==========================================================================
+   10. PREMIUM ADMIN PANEL & AUDIT LOGS (RE-DESIGNED)
+   ========================================================================== */
+
+.admin-panel { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 24px; 
+    animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    height: auto;
+    overflow: visible;
+}
+
+/* টেবিল কন্টেইনার ফিক্স (Data যেন নিচে কেটে না যায়) */
+.admin-table-wrapper {
+    background: var(--glass-bg);
+    backdrop-filter: blur(15px);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--glass-border);
+    overflow-x: auto;
+    overflow-y: visible; /* কন্টেন্ট নিচে ছড়িয়ে পড়ার সুবিধা */
+    box-shadow: var(--glass-shadow);
+    margin-bottom: 40px;
+}
+
+.glass-table { 
+    width: 100%; 
+    border-collapse: separate; /* বর্ডার রেডিয়াস কাজ করানোর জন্য */
+    border-spacing: 0;
+    text-align: left; 
+}
+
+/* 🚀 STICKY HEADER: স্ক্রল করলেও হেডার উপরে আটকে থাকবে */
+.glass-table th { 
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding: 18px 20px; 
+    background: rgba(255, 255, 255, 0.9); /* হালকা ট্রান্সপারেন্ট */
+    backdrop-filter: blur(10px);
+    font-size: 0.75rem; 
+    font-weight: 800; 
+    color: var(--text-muted); 
+    text-transform: uppercase; 
+    letter-spacing: 1px;
+    border-bottom: 2px solid var(--glass-border);
+}
+
+/* ডার্ক মোডে হেডারের ব্যাকগ্রাউন্ড ফিক্স */
+body.theme-dark .glass-table th { 
+    background: rgba(15, 23, 42, 0.9); 
+}
+
+.glass-table td { 
+    padding: 16px 20px; 
+    border-bottom: 1px solid var(--glass-border); 
+    font-size: 0.9rem; 
+    color: var(--text-main); 
+    vertical-align: middle;
+    transition: all 0.2s ease;
+}
+
+/* টেবিলের একদম শেষ রো-এর নিচের বর্ডার থাকবে না */
+.glass-table tr:last-child td { 
+    border-bottom: none; 
+}
+
+/* রো হোভার ইফেক্ট (স্মুথ গ্লাস হাইলাইট) */
+.glass-table tr:hover td { 
+    background: rgba(37, 99, 235, 0.04); 
+    transform: scale(1.002);
+}
+
+/* =========================================================
+   DYNAMIC STATUS BADGES (TABLE)
+   ========================================================= */
+.badge-table { 
+    padding: 6px 14px; 
+    border-radius: 10px; 
+    font-size: 0.75rem; 
+    font-weight: 800; 
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* Critical Risk (Red) */
+.badge-critical { 
+    background: rgba(239, 68, 68, 0.12) !important; 
+    color: var(--danger) !important; 
+    border: 1px solid rgba(239, 68, 68, 0.2); 
+}
+
+/* Warning Risk (Orange) */
+.badge-warning { 
+    background: rgba(245, 158, 11, 0.12) !important; 
+    color: var(--warning) !important; 
+    border: 1px solid rgba(245, 158, 11, 0.2); 
+}
+
+/* Safe/Normal Risk (Green) */
+.badge-safe { 
+    background: rgba(16, 185, 129, 0.12) !important; 
+    color: var(--success) !important; 
+    border: 1px solid rgba(16, 185, 129, 0.2); 
+}
+
+/* IP Info বাটন স্টাইল */
+.btn-secondary-sm {
+    background: rgba(0,0,0,0.05);
+    border: 1px solid var(--glass-border);
+    color: var(--text-muted);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-secondary-sm:hover {
+    background: var(--text-main);
+    color: white;
+}
+
+/* --------------------------------------------------------------------------
+   11. SYSTEM MODALS (POPUPS, ALERTS & REPORTS)
+   -------------------------------------------------------------------------- */
+.modal-overlay { 
+    position: fixed; inset: 0; z-index: 10000; 
+    background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(10px); 
+    display: flex; justify-content: center; align-items: center; 
+    transition: opacity 0.3s ease; padding: 20px;
+}
+
+/* Standard Large Modal (Report & Manual Entry) */
+.modal-paper { 
+    width: 850px; max-width: 100%; max-height: 90vh; 
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg); position: relative; 
+    display: flex; flex-direction: column; 
+    box-shadow: 0 25px 50px rgba(0,0,0,0.3); overflow: hidden;
+}
+
+/* Small Alert Modal (Logout, Clear Data, Code Blue) */
+.modal-alert {
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    width: 450px; max-width: 100%; padding: 40px 30px;
+    border-radius: var(--radius-lg); text-align: center; 
+    box-shadow: 0 25px 50px rgba(0,0,0,0.3); position: relative; 
+}
+
+/* Close Button (The X) */
+.btn-close-modal { 
+    position: absolute; top: 20px; right: 20px; 
+    background: rgba(239, 68, 68, 0.1); color: var(--danger); 
+    border: 1px solid rgba(239, 68, 68, 0.2); font-size: 1.5rem; 
+    cursor: pointer; border-radius: 50%; width: 40px; height: 40px; 
+    display: flex; justify-content: center; align-items: center; 
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 10;
+}
+.btn-close-modal:hover { 
+    background: var(--danger); color: white; 
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); transform: rotate(90deg); 
+}
+
+/* Modal Headers & Footers */
+.paper-header { 
+    padding: 25px 40px; border-bottom: 4px solid var(--primary); 
+    display: flex; justify-content: space-between; align-items: flex-end; 
+    background: rgba(0,0,0,0.02);
+}
+.ph-brand { font-size: 1.8rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 10px;}
+.ph-meta { text-align: right; font-size: 0.95rem; color: var(--text-muted); font-weight: 600;}
+
+.paper-body { padding: 40px; flex: 1; overflow-y: auto; color: var(--text-main); }
+.paper-body::-webkit-scrollbar { width: 6px; }
+.paper-body::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 10px; }
+
+.paper-footer { 
+    padding: 20px 40px; background: rgba(0,0,0,0.02); 
+    border-top: 1px solid var(--glass-border); 
+    display: flex; justify-content: space-between; align-items: center; 
+}
+.paper-footer p { margin: 0; font-size: 0.85rem; color: var(--text-muted); }
+
+/* Print Button */
+.btn-primary-print { 
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); 
+    color: white; padding: 12px 25px; border: none; border-radius: var(--radius-sm); 
+    font-weight: 800; font-size: 1rem; cursor: pointer; display: flex; 
+    align-items: center; gap: 8px; box-shadow: 0 4px 15px var(--primary-glow); 
+    transition: 0.3s; 
+}
+.btn-primary-print:hover { transform: translateY(-2px); box-shadow: 0 8px 25px var(--primary-glow); }
+
+/* Alert Typography & Actions */
+.alert-icon-wrapper { font-size: 4.5rem; margin-bottom: 15px; }
+.modal-alert h2 { font-size: 1.8rem; font-weight: 800; color: var(--text-main); margin-bottom: 12px; }
+.modal-alert p { font-size: 1rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 30px; }
+
+.alert-actions-row { display: flex; gap: 15px; justify-content: center; }
+.btn-cancel { 
+    flex: 1; padding: 14px; background: rgba(0,0,0,0.05); border: none; 
+    border-radius: var(--radius-md); font-weight: 700; font-size: 1rem; 
+    color: var(--text-main); cursor: pointer; transition: 0.3s; 
+}
+.btn-cancel:hover { background: rgba(0,0,0,0.1); }
+body.theme-dark .btn-cancel { background: rgba(255,255,255,0.05); }
+body.theme-dark .btn-cancel:hover { background: rgba(255,255,255,0.1); }
+
+.btn-confirm-danger { 
+    flex: 1; padding: 14px; background: var(--danger); border: none; 
+    border-radius: var(--radius-md); font-weight: 800; font-size: 1rem; 
+    color: white; cursor: pointer; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); 
+    transition: 0.3s; 
+}
+.btn-confirm-danger:hover { background: #dc2626; transform: translateY(-2px); }
+
+/* --------------------------------------------------------------------------
+   12. LOGIN & AUTHENTICATION PAGE
+   -------------------------------------------------------------------------- */
+.auth-body { 
+    margin: 0; padding: 0; 
+    background: radial-gradient(circle at center, #f1f5f9 0%, #cbd5e1 100%); 
+    min-height: 100vh; display: flex; align-items: center; justify-content: center; 
+}
+body.theme-dark.auth-body {
+    background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+}
+
+.auth-overlay { width: 100%; display: flex; justify-content: center; padding: 20px; }
+.auth-modern-container { 
+    display: flex; width: 100%; max-width: 1000px; min-height: 600px; 
+    border-radius: 24px; overflow: hidden; background: var(--glass-bg); 
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); border: 1px solid var(--glass-border);
+}
+
+/* Left Side (Visual) */
+.auth-visual-side { 
+    flex: 1; position: relative; 
+    background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); 
+    display: flex; flex-direction: column; justify-content: center; 
+    align-items: center; padding: 40px; color: white; text-align: center; 
+}
+.auth-visual-side h1 { font-size: 2.5rem; margin-bottom: 10px; font-weight: 800; letter-spacing: -1px; }
+.auth-visual-side p { font-size: 1.1rem; opacity: 0.9; margin-bottom: 20px; }
+.mimic-badge { 
+    background: rgba(255,255,255,0.15); border-radius: 50px; padding: 8px 16px; 
+    font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 8px; 
+    backdrop-filter: blur(5px);
+}
+
+/* Right Side (Form) */
+.auth-form-side { 
+    flex: 1.2; display: flex; flex-direction: column; 
+    align-items: center; justify-content: center; padding: 50px 60px; 
+}
+.form-content { width: 100%; max-width: 380px; display: flex; flex-direction: column; }
+.form-content h2 { font-size: 2.2rem; font-weight: 800; color: var(--text-main); margin-bottom: 8px; }
+.form-content .sub-text { font-size: 1rem; color: var(--text-muted); margin-bottom: 35px; }
+
+.auth-input-group { position: relative; margin-bottom: 20px; width: 100%; }
+.auth-input-group .input-icon { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--primary); font-size: 1.2rem; }
+.auth-input-modern-mega { 
+    width: 100%; padding: 18px 20px 18px 52px; border-radius: 12px; 
+    border: 1px solid var(--glass-border); background: rgba(0,0,0,0.03); 
+    color: var(--text-main); font-size: 1.05rem; font-weight: 600; transition: 0.3s; 
+}
+body.theme-dark .auth-input-modern-mega { background: rgba(255,255,255,0.05); }
+.auth-input-modern-mega:focus { 
+    border-color: var(--primary); background: transparent; 
+    box-shadow: 0 0 0 4px var(--primary-glow); 
+}
+
+.btn-login-modern-mega { 
+    width: 100%; background: var(--primary); color: white; border: none; 
+    padding: 16px; border-radius: 12px; font-size: 1.15rem; font-weight: 800; 
+    cursor: pointer; display: flex; justify-content: center; align-items: center; 
+    gap: 10px; transition: 0.3s; margin-top: 10px; box-shadow: 0 8px 20px var(--primary-glow);
+}
+.btn-login-modern-mega:hover { transform: translateY(-2px); background: #1d4ed8; }
+
+.separator-text { 
+    margin: 30px 0; display: flex; align-items: center; text-align: center; 
+    color: var(--text-muted); font-size: 0.85rem; font-weight: 700; 
+}
+.separator-text::before, .separator-text::after { content: ""; flex: 1; border-bottom: 1px solid var(--glass-border); }
+.separator-text span { padding: 0 15px; }
+
+.btn-secondary-modern-mega { 
+    width: 100%; background: transparent; border: 2px solid var(--glass-border); 
+    padding: 15px; border-radius: 12px; font-size: 1rem; font-weight: 700; 
+    cursor: pointer; display: flex; justify-content: center; align-items: center; 
+    gap: 8px; transition: 0.2s; color: var(--text-main); 
+}
+.btn-secondary-modern-mega:hover { background: rgba(0,0,0,0.03); border-color: var(--text-muted); }
+
+/* --------------------------------------------------------------------------
+   13. PRINT MEDIA QUERY (FOR PDF REPORTS)
+   -------------------------------------------------------------------------- */
+@media print {
+    body * { visibility: hidden; }
+    body { background: white; }
+    #modal-report, #modal-report * { visibility: visible; }
+    #modal-report { position: absolute; left: 0; top: 0; width: 100%; background: white; padding: 0; }
+    .modal-paper { width: 100%; max-width: 100%; box-shadow: none; border: none; border-radius: 0; }
+    .btn-close-modal, .btn-primary-print { display: none !important; }
+}
+
+/* --------------------------------------------------------------------------
+   14. RESPONSIVE DESIGN (TABLETS & MOBILES)
+   -------------------------------------------------------------------------- */
+@media (max-width: 1300px) {
+    .dashboard-grid.layout-3-col {
+        grid-template-columns: 320px 1fr;
+        grid-template-areas: 
+            "left center"
+            "right right";
+    }
+}
+
+@media (max-width: 992px) {
+    .app-layout { flex-direction: column; }
+    .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--glass-border); flex-direction: row; align-items: center; justify-content: space-between; padding: 10px 20px; }
+    .sidebar-brand { margin: 0; border: none; height: auto; }
+    .sidebar-nav-scroll, .sidebar-user-widget, .server-status { display: none; } /* Hide complex menus on mobile */
+    .btn-collapse { display: block; }
+    
+    .top-header { height: auto; flex-direction: column; padding: 15px; gap: 15px; }
+    .header-right { width: 100%; justify-content: space-between; }
+    .search-widget { flex: 1; margin-right: 15px; }
+    .search-widget input { width: 100%; }
+    .search-widget input:focus { width: 100%; }
+    
+    .dashboard-grid.layout-3-col {
+        grid-template-columns: 1fr;
+        grid-template-areas: "left" "center" "right";
+    }
+    
+    /* Login Page Break */
+    .auth-modern-container { flex-direction: column; min-height: auto; border-radius: 0; }
+    .auth-visual-side { padding: 40px 20px; }
+    .auth-form-side { padding: 40px 20px; }
+}
+
+/* --------------------------------------------------------------------------
+   15. ANIMATIONS & KEYFRAMES
+   -------------------------------------------------------------------------- */
+@keyframes loadLine { 
+    0% { width: 0%; } 
+    100% { width: 100%; } 
+}
+
+@keyframes dangerPulse { 
+    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 
+    70% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); } 
+    100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } 
+}
+
+@keyframes premiumHeartbeat { 
+    0% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(37, 99, 235, 0.3)); } 
+    15% { transform: scale(1.15); filter: drop-shadow(0 0 20px var(--primary)); } 
+    30% { transform: scale(1.02); filter: drop-shadow(0 0 10px rgba(37, 99, 235, 0.5)); } 
+    45% { transform: scale(1.2); filter: drop-shadow(0 0 25px var(--primary)); } 
+    100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(37, 99, 235, 0.3)); } 
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(30px); }
+}
+
+@keyframes pop {
+    0% { opacity: 0; transform: scale(0.95); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Helper Animation Classes */
+.animate-slide-up { animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.animate-pop { animation: pop 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.spin-icon { display: inline-block; animation: spin 1s linear infinite; }
+
+/* ==========================================================================
+   THE MEGA UI/UX UPDATE (ROUNDED CORNERS, DARK MODE FIX & TOAST ALERTS)
+   ========================================================================== */
+
+/* ১. বক্সগুলোকে সুন্দর, সফট এবং রাউন্ডেড করা (চারকোনা ভাব দূর করা) */
+:root {
+    --radius-lg: 24px;  /* আগের চেয়ে অনেক বেশি রাউন্ড করা হলো */
+    --radius-md: 18px;
+    --radius-sm: 12px;
+}
+
+/* ২. ডার্ক মোডে ম্যানুয়াল ইনপুট এবং টেক্সট ভিজিবিলিটি ফিক্স */
+body.theme-dark .input-field, 
+body.theme-dark .vb-input {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #f8fafc !important; /* ডার্ক মোডে টেক্সট একদম উজ্জ্বল সাদা হবে */
+    border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+body.theme-dark .input-field::placeholder,
+body.theme-dark .vb-input::placeholder {
+    color: rgba(255, 255, 255, 0.4) !important;
+}
+
+body.theme-dark .vb-label {
+    color: #cbd5e1 !important; /* ডার্ক মোডে লেবেলগুলোও স্পষ্ট হবে */
+}
+
+/* ডার্ক মোডের মোডাল বা পপআপ ব্যাকগ্রাউন্ড ফিক্স */
+body.theme-dark .modal-paper {
+    background: #0f172a !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+}
+body.theme-dark .paper-header, 
+body.theme-dark .paper-footer {
+    background: #020617 !important;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+body.theme-dark .paper-header h2 {
+    color: #f8fafc !important;
+}
+
+/* ৩. বোরিং Alert-এর বদলে Premium Toast Notification */
+.custom-toast {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    padding: 16px 24px;
+    border-radius: var(--radius-md);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 100000;
+    transform: translateX(150%);
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* বাউন্সি ইফেক্ট */
+    color: var(--text-main);
+    font-weight: 700;
+    max-width: 400px;
+}
+
+.custom-toast.show {
+    transform: translateX(0);
+}
+
+.toast-icon {
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toast-icon.warning { color: var(--warning); }
+.toast-icon.danger { color: var(--danger); }
+.toast-icon.success { color: var(--success); }
+.toast-icon.info { color: var(--primary); }
+
+/* ৪. AI Result Text কে আরও ফোকাসড এবং বড় করা */
+.status-text-main {
+    font-size: 1.5rem !important; /* ফন্ট সাইজ বড় করা হলো */
+    font-weight: 800 !important;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+}
+
+.ai-disease-name {
+    font-size: 1.8rem;
+    display: block;
+    margin-top: 5px;
+    text-transform: capitalize;
+}
+
+/* --------------------------------------------------------------------------
+   6. FORM ELEMENTS & PATIENT CONTEXT
+   -------------------------------------------------------------------------- */
+.form-grid { display: flex; flex-direction: column; gap: 18px; }
+.input-group { display: flex; flex-direction: column; gap: 8px; }
+.split-group { flex-direction: row; gap: 15px; }
+.sub-group { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+
+.input-group label, .sub-group label { 
+    font-size: 0.75rem; font-weight: 800; color: var(--text-muted); 
+    text-transform: uppercase; letter-spacing: 0.5px; 
+}
+
+/* Premium Input Fields */
+.input-field {
+    width: 100%; padding: 12px 16px; border-radius: 12px; /* রাউন্ডেড করা হলো */
+    border: 1px solid var(--glass-border); 
+    background: rgba(255,255,255,0.6); color: var(--text-main); 
+    font-size: 0.95rem; font-family: inherit; font-weight: 700;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+/* ডার্ক মোড ফিক্স: ইনপুট ফিল্ডের ব্যাকগ্রাউন্ড এবং কালার স্পষ্ট করা হলো */
+body.theme-dark .input-field { 
+    background: rgba(255, 255, 255, 0.05); 
+    color: #f1f5f9; 
+    border-color: rgba(255,255,255,0.1);
+}
+body.theme-dark .input-field::placeholder { color: rgba(255,255,255,0.3); }
+
+.input-field:focus { 
+    background: var(--bg-body); border-color: var(--primary); 
+    box-shadow: 0 0 0 4px var(--primary-glow), inset 0 2px 4px rgba(0,0,0,0.01); 
+}
+
+.read-only-box { 
+    padding: 12px 16px; border-radius: 12px; background: rgba(0,0,0,0.03); 
+    border: 1px dashed var(--glass-border); color: var(--text-main); 
+    font-family: var(--font-mono); font-weight: 800; 
+    display: flex; align-items: center; gap: 10px; 
+}
+body.theme-dark .read-only-box { background: rgba(255,255,255,0.02); color: #94a3b8; }
+
+/* Custom Select Dropdown */
+.custom-select-wrapper { position: relative; }
+.select-icon { 
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%); 
+    color: var(--primary); font-size: 1.2rem; pointer-events: none; 
+}
+.select-large { padding-left: 42px; font-size: 1rem; cursor: pointer; appearance: none; }
+
+/* --------------------------------------------------------------------------
+   7. VITALS GRID & PARAMETER BOXES (CENTER PANEL)
+   -------------------------------------------------------------------------- */
+.vitals-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
+    gap: 16px; align-items: start; padding-bottom: 20px;
+}
+
+.vital-box { 
+    background: var(--glass-bg); border: 2px solid var(--glass-border); 
+    padding: 18px 15px; border-radius: 16px; text-align: center; /* রাউন্ডেড বক্স */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02); transition: all 0.3s ease; 
+    position: relative; overflow: hidden;
+}
+.vital-box:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0,0,0,0.06); border-color: rgba(37, 99, 235, 0.3); }
+
+.vb-icon { font-size: 1.5rem; margin-bottom: 10px; transition: 0.3s; }
+.vital-box:hover .vb-icon { transform: scale(1.1); color: var(--primary); }
+
+.vb-label { 
+    display: block; font-size: 0.7rem; font-weight: 800; 
+    color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; 
+}
+body.theme-dark .vb-label { color: #94a3b8; }
+
+.vb-input { 
+    width: 100%; font-size: 1.8rem; font-weight: 800; font-family: var(--font-ui); 
+    color: var(--text-main); background: transparent; border: none; 
+    text-align: center; padding: 0; letter-spacing: -0.5px;
+}
+body.theme-dark .vb-input { color: #f8fafc; }
+
+/* --------------------------------------------------------------------------
+   8. MEGA ACTION BUTTON (AI INITIALIZATION)
+   -------------------------------------------------------------------------- */
+.form-actions { display: flex; flex-direction: column; gap: 12px; }
+.action-status { font-size: 0.85rem; font-weight: 700; color: var(--danger); text-align: center; min-height: 20px; }
+
+.btn-primary-mega {
+    min-height: 65px; width: 100%; padding: 0 25px;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); 
+    color: white; border: none; border-radius: 16px; /* বাটন রাউন্ডেড */
+    display: flex; justify-content: space-between; align-items: center; 
+    font-size: 1.05rem; font-weight: 800; cursor: pointer; 
+    box-shadow: 0 10px 25px var(--primary-glow); transition: all 0.3s;
+    overflow: hidden; position: relative;
+}
+.btn-primary-mega::after {
+    content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: 0.5s;
+}
+.btn-primary-mega:hover { transform: translateY(-2px); box-shadow: 0 15px 35px var(--primary-glow); }
+.btn-primary-mega:hover::after { left: 100%; }
+.btn-primary-mega:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+
+/* --------------------------------------------------------------------------
+   9. AI RISK GAUGE & RESULTS PANEL (RIGHT PANEL)
+   -------------------------------------------------------------------------- */
+.result-body { display: flex; flex-direction: column; align-items: center; }
+
+/* Circular Conic Gradient Gauge */
+.gauge-container { 
+    position: relative; width: 180px; height: 180px; 
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.08)); margin: 0 auto 20px auto; 
+}
+.risk-ring { 
+    width: 100%; height: 100%; border-radius: 50%; 
+    background: conic-gradient(var(--c) calc(var(--p) * 1%), var(--glass-border) 0deg); 
+    display: flex; align-items: center; justify-content: center; 
+    transition: background 1.5s cubic-bezier(0.4, 0, 0.2, 1); 
+}
+.ring-center { 
+    width: 82%; height: 82%; background: var(--bg-body); 
+    border-radius: 50%; display: flex; flex-direction: column; 
+    align-items: center; justify-content: center; 
+    box-shadow: inset 0 4px 10px rgba(0,0,0,0.05);
+}
+body.theme-dark .ring-center { box-shadow: inset 0 4px 10px rgba(0,0,0,0.4); }
+
+.score-number { 
+    font-size: 3.5rem; font-weight: 800; color: var(--text-main); 
+    line-height: 1; letter-spacing: -2px; font-family: var(--font-mono);
+}
+.score-label { 
+    font-size: 0.7rem; font-weight: 800; color: var(--text-muted); 
+    margin-top: 5px; letter-spacing: 1.5px; 
+}
+
+/* Status Text & Indicator */
+.risk-status { 
+    display: inline-flex; align-items: center; gap: 12px; padding: 12px 24px; 
+    background: rgba(0,0,0,0.03); border-radius: 50px; 
+    border: 1px solid var(--glass-border); margin: 10px 0 15px 0; 
+}
+body.theme-dark .risk-status { background: rgba(255,255,255,0.03); }
+.status-indicator { 
+    width: 14px; height: 14px; border-radius: 50%; 
+    background: var(--text-muted); transition: 0.5s;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* এআই স্ক্যানের পর রোগের নাম বড় করে দেখানোর ডিজাইন */
+.status-text-main { 
+    font-size: 1.3rem; font-weight: 800; color: var(--text-main); 
+    margin: 0; transition: 0.5s; line-height: 1.2; text-align: left;
+}
+.ai-disease-name {
+    font-size: 1.6rem; /* রোগের নামটা অনেক বড় ও স্পষ্ট করে দেওয়া হলো */
+    display: block;
+    margin-top: 2px;
+    text-transform: capitalize;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* ==========================================================================
+   DARK MODE FIX: MANUAL PARAMETER ENTRY MODAL
+   ========================================================================== */
+
+/* ১. ম্যানুয়াল এন্ট্রি বক্সগুলোর ব্যাকগ্রাউন্ড ঠিক করা */
+body.theme-dark #mega-input-grid .vital-box {
+    background: rgba(30, 41, 59, 0.8) !important; /* হালকা স্লেট ব্লু ব্যাকগ্রাউন্ড */
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.2) !important;
+}
+
+body.theme-dark #mega-input-grid .vital-box:hover {
+    background: rgba(30, 41, 59, 1) !important;
+    border-color: var(--primary) !important;
+}
+
+/* ২. বক্সের ভেতরের লেবেল এবং ইউনিট (BPM, mmHg) এর কালার ফিক্স */
+body.theme-dark #mega-input-grid .vb-label {
+    color: #cbd5e1 !important; /* উজ্জ্বল গ্রে কালার যাতে স্পষ্ট বোঝা যায় */
+    font-weight: 800 !important;
+}
+
+body.theme-dark #mega-input-grid .vb-label span {
+    color: #38bdf8 !important; /* ব্র্যাকেটের ভেতরের ইউনিটগুলো সুন্দর নিয়ন ব্লু হবে */
+}
+
+/* ৩. ইনপুট ফিল্ডের ডিজাইন (যেখানে তুমি মান বসাবে) */
+body.theme-dark #mega-input-grid .vb-input {
+    background: rgba(0, 0, 0, 0.25) !important; /* ইনপুটের জায়গাটা একটু ডার্ক কাট-আউট */
+    color: #ffffff !important; /* লেখা একদম উজ্জ্বল সাদা হবে */
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2) !important; /* নিচের বর্ডার স্পষ্ট করা হলো */
+    border-radius: 6px 6px 0 0 !important;
+    padding: 8px !important;
+    margin-top: 8px !important;
+}
+
+/* ইনপুট ফিল্ডে ক্লিক করলে (Focus) যা হবে */
+body.theme-dark #mega-input-grid .vb-input:focus {
+    border-bottom: 2px solid var(--primary) !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.15) !important;
+}
+
+/* ৪. প্লেসহোল্ডার (যেমন: '-') এর কালার ফিক্স */
+body.theme-dark #mega-input-grid .vb-input::placeholder {
+    color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* ৫. ক্যাটাগরি হেডারগুলো (VITALS, HEMATOLOGY) যেন স্পষ্ট বোঝা যায় */
+body.theme-dark #mega-input-grid h4 {
+    color: #60a5fa !important;
+    border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* প্রিন্ট আইকনের ক্লাসে এই লাইনগুলো দাও */
+.print-icon {
+    font-size: 24px; /* আইকন বড় হবে */
+    cursor: pointer;
+}
+
+/* Age এবং Gender এর যে মেইন কন্টেইনার */
+.age-gender-wrapper {
+    display: flex;
+    gap: 15px; /* দুজনের মাঝখানে সুন্দর ফাঁকা জায়গা তৈরি করবে */
+    width: 100%;
+}
+
+.close-param-btn {
+    width: 30px;  /* ক্লিক করার এরিয়া বড় করা হলো */
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10; /* যেন অন্য কিছুর নিচে চাপা না পড়ে */
+}
+
+/* বাটনগুলোর কমন ক্লাস (যেমন: .input-action-btn) */
+.input-action-btn {
+    cursor: pointer;
+    transition: all 0.3s ease; /* স্মুথ অ্যানিমেশন */
+}
+.input-action-btn:hover {
+    transform: translateY(-3px); /* হোভার করলে হালকা উপরে উঠবে */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* সুন্দর শ্যাডো পড়বে */
+    border-color: #0d6efd; /* বর্ডারের রঙ নীল হবে */
+}
+
+/* ম্যানুয়াল ইনপুট বক্সের ক্লাস */
+.manual-entry-input {
+    position: relative;
+    z-index: 50; /* এটি ইনপুট বক্সকে সবার ওপরে আনবে */
+    pointer-events: auto; /* মাউস ক্লিক কনফার্ম করবে */
+}
+
+/* =========================================================
+   ULTIMATE UI/UX FIXES: BUTTONS & CLICKS
+   ========================================================= */
+
+/* ১. X (কাটার) বাটনের ক্লিক সমস্যা চিরতরে সমাধান */
+.vital-box button {
+    z-index: 100 !important; /* এটি বাটনটিকে সবকিছুর ওপরে রাখবে */
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(239, 68, 68, 0.1) !important; /* হালকা লাল ব্যাকগ্রাউন্ড */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.vital-box button:hover {
+    background: var(--danger) !important;
+    color: white !important;
+    transform: scale(1.15) rotate(90deg) !important; /* সুন্দর করে ঘুরে বড় হবে */
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.4);
+}
+
+/* ২. Manual, CSV এবং OCR বাটনগুলোকে প্রিমিয়াম ও কালারফুল করা */
+
+/* Manual Button (পার্পল গ্রেডিয়েন্ট) */
+[onclick="openManualModal()"] {
+    background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%) !important;
+    color: white !important;
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3) !important;
+    border-radius: 12px !important;
+    transition: all 0.3s ease !important;
+    font-weight: 800 !important;
+}
+
+/* CSV Button (গ্রিন গ্রেডিয়েন্ট) */
+[onclick="handleCSVUpload()"] {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: white !important;
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important;
+    border-radius: 12px !important;
+    transition: all 0.3s ease !important;
+    font-weight: 800 !important;
+}
+
+/* OCR Button (ব্লু গ্রেডিয়েন্ট) */
+#btn-ocr-scan {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    color: white !important;
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3) !important;
+    border-radius: 12px !important;
+    transition: all 0.3s ease !important;
+    font-weight: 800 !important;
+}
+
+/* ৩. বাটন হোভার অ্যানিমেশন (মাউস নিলে লাফিয়ে উঠবে) */
+[onclick="openManualModal()"]:hover,
+[onclick="handleCSVUpload()"]:hover,
+#btn-ocr-scan:hover {
+    transform: translateY(-4px) !important;
+    filter: brightness(1.15);
+}
+
+/* ৪. বাটনগুলোর ভেতরের আইকন সাইজ ফিক্স */
+[onclick="openManualModal()"] i,
+[onclick="handleCSVUpload()"] i,
+#btn-ocr-scan i {
+    margin-right: 6px;
+    font-size: 1.1rem;
+}
+
+/* =========================================================
+   INPUT FIELD GLITCH FIX (REMOVING DEFAULT OUTLINE & ARROWS)
+   ========================================================= */
+
+/* ফোকাস করলে ব্রাউজারের ডিফল্ট নীল বক্স বা গ্লিচ বন্ধ করা হলো */
+.vb-input:focus, 
+.input-field:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* নাম্বার ইনপুট বক্সের ভেতরের আপ-ডাউন অ্যারো (Spinners) লুকিয়ে ফেলা হলো */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0 !important;
+}
+
+/* ফায়ারফক্স ব্রাউজারের জন্য ফিক্স */
+input[type="number"] {
+    -moz-appearance: textfield !important;
+}
+
+/* =========================================================
+   PRINT ICON SIZE ENFORCEMENT
+   ========================================================= */
+i.ri-printer-line, 
+[onclick="window.print()"], 
+.print-icon {
+    font-size: 26px !important; /* আইকন বেশ বড় ও স্পষ্ট হবে */
+    color: var(--text-main) !important;
+    cursor: pointer !important;
+    transition: transform 0.2s ease !important;
+}
+
+i.ri-printer-line:hover, 
+.print-icon:hover {
+    transform: scale(1.2) !important; /* মাউস নিলে সুন্দর করে লাফিয়ে উঠবে */
+    color: var(--primary) !important;
+}
+
+/* =========================================================
+   AUDIT LOGS BUTTONS (EXPORT & CLEAR)
+   ========================================================= */
+.btn-export-csv {
+    background: rgba(16, 185, 129, 0.1) !important;
+    color: var(--success) !important;
+    border: 1px solid rgba(16, 185, 129, 0.3) !important;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 800;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn-export-csv:hover {
+    background: var(--success) !important;
+    color: white !important;
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+    transform: translateY(-2px);
+}
+
+.btn-clear-logs {
+    background: rgba(239, 68, 68, 0.1) !important;
+    color: var(--danger) !important;
+    border: 1px solid rgba(239, 68, 68, 0.3) !important;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 800;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn-clear-logs:hover {
+    background: var(--danger) !important;
+    color: white !important;
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+    transform: translateY(-2px);
+}
+
+/* 🛑 ফিক্স: স্ক্রলিং এবং কন্টেন্ট কাটিং সমস্যা সমাধান */
+.app-panel {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: visible; /* ভেতরের কন্টেন্ট যেন কেটে না যায় */
+    padding-bottom: 80px; /* নিচে পর্যাপ্ত ফাঁকা জায়গা রাখা হলো */
+}
+
+.workspace-scroll {
+    overflow-y: auto;
+    height: calc(100vh - 100px); /* হেডারের পর পুরো জায়গা স্ক্রল হবে */
+}
+
+
+/* যখন প্যানেল এক্টিভ হবে তখন এনিমেশন */
+.app-panel:not(.panel-hidden) {
+    animation: slideUp 0.4s ease-out;
+}
+
+
+/* প্যানেল হাইড করার জন্য স্মার্ট ক্লাস */
+.panel-hidden {
+    display: none !important;
+}
+
+/* ড্যাশবোর্ড ফিরে আসলে যেন ৩-কলাম গ্রিড ঠিক থাকে */
+#view-dashboard:not(.panel-hidden) {
+    display: grid !important;
+}

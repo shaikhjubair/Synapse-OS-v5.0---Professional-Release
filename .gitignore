@@ -1,0 +1,28 @@
+# Ignore Dataset Files (MIMIC-III Rule)
+data/
+*.csv
+*.csv.gz
+
+# Ignore Python Virtual Environments
+.venv/
+env/
+__pycache__/
+
+# Ignore Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
+
+# OS generated files
+.DS_Store
+
+# সিকিউরিটি ফাইল
+.env
+
+# পাইথনের অপ্রয়োজনীয় ফাইল
+__pycache__/
+.venv/.venv-1/
+.env
+*.db
+archive_old_files/
+.venv-1/
+.env
+*.db

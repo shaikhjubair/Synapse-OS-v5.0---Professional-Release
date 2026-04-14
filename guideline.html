@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Synapse OS | Patient Guidelines</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { padding: 40px; background: var(--bg-body); }
+        .guideline-container { max-width: 800px; margin: 0 auto; }
+        .disease-box { background: white; border-radius: 12px; padding: 25px; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border-left: 6px solid var(--warning); }
+        
+        /* --- নতুন যোগ করা স্টাইল (প্যারামিটার গ্রিড) --- */
+        .patient-profile-box { background: white; padding: 20px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid var(--glass-border); }
+        .profile-header { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px; }
+        .param-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+        .param-item { display: flex; justify-content: space-between; border-bottom: 1px dashed #e2e8f0; padding-bottom: 5px; font-size: 0.85rem; }
+        .param-label { color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
+        .param-val { color: var(--text-main); font-weight: 800; }
+    </style>
+</head>
+<body>
+
+    <div class="guideline-container">
+        <h1 style="color: var(--text-main); margin-bottom: 5px;"><i class="ri-health-book-line" style="color: var(--primary);"></i> Clinical Precautions & Guidelines</h1>
+        <p style="color: var(--text-muted); margin-bottom: 20px;">Based on your recent Synapse AI Assessment.</p>
+
+        <div id="patient-data-summary"></div>
+
+        <div id="guidelines-area">
+            </div>
+    </div>
+
+    <script>
+    const patientVitals = JSON.parse(localStorage.getItem('patientVitals') || '{}');
+    const aiResult = JSON.parse(localStorage.getItem('aiResult') || 'null');
+    const patientAge = localStorage.getItem('patientAge') || "Not Provided";
+    const patientGender = localStorage.getItem('patientGender') || "Not Provided";
+    const guidelineArea = document.getElementById('guidelines-area');
+
+    // প্যারামিটারগুলোর প্রফেশনাল নাম দেখানোর জন্য ম্যাপিং
+    const PARAM_LABELS = {
+        'heart_rate': 'Heart Rate', 'bp_systolic': 'Systolic BP', 'bp_diastolic': 'Diastolic BP',
+        'temperature': 'Temp', 'hba1c': 'HbA1c', 'egfr': 'eGFR', 'glucose': 'Glucose',
+        'cholesterol': 'Cholesterol', 'triglycerides': 'Triglycerides', 'creatinine': 'Creatinine',
+        'bun': 'BUN', 'wbc_count': 'WBC', 'rbc': 'RBC', 'hemoglobin': 'Hemoglobin',
+        'platelets': 'Platelets', 'sgpt': 'SGPT', 'sgot': 'SGOT', 'bilirubin': 'Bilirubin',
+        'albumin': 'Albumin', 'alp': 'ALP', 'sodium': 'Sodium', 'potassium': 'Potassium',
+        'calcium': 'Calcium', 'magnesium': 'Magnesium', 'phosphorus': 'Phosphorus',
+        'chloride': 'Chloride', 'pt': 'PT', 'aptt': 'APTT', 'inr': 'INR', 'lactate': 'Lactate',
+        'crp': 'CRP', 'troponin': 'Troponin T', 'ck_mb': 'CK-MB', 'po2': 'pO2', 'pco2': 'pCO2',
+        'sao2': 'SaO2', 'ph': 'pH'
+    };
+
+    // রোগীর প্রোফাইল ও ডেটা রেন্ডার করার ফাংশন
+    function renderPatientData() {
+        const summaryDiv = document.getElementById('patient-data-summary');
+        if (Object.keys(patientVitals).length === 0) return;
+
+        let html = `
+            <div class="patient-profile-box animate-slide-up">
+                <div class="profile-header">
+                    <h3 style="margin: 0; font-size: 1rem; color: var(--primary);"><i class="ri-user-heart-line"></i> Patient Clinical Profile</h3>
+                    <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">
+                        Age: <strong style="color: var(--text-main);">${patientAge}</strong> | Gender: <strong style="color: var(--text-main);">${patientGender}</strong>
+                    </span>
+                </div>
+                <div class="param-grid">
+        `;
+
+        for (const [key, value] of Object.entries(patientVitals)) {
+            let label = PARAM_LABELS[key] || key.toUpperCase();
+            html += `<div class="param-item">
+                        <span class="param-label">${label}</span>
+                        <span class="param-val">${value}</span>
+                     </div>`;
+        }
+        html += `</div></div>`;
+        summaryDiv.innerHTML = html;
+    }
+
+    async function fetchAIGuideline(disease, probability) {
+        try {
+            const response = await fetch('http://127.0.0.1:5000/generate_guideline', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    disease: disease,
+                    probability: probability,
+                    vitals: patientVitals,
+                    age: patientAge,
+                    gender: patientGender
+                })
+            });
+            const data = await response.json();
+            return data.status === 'success' ? data.guideline : "Failed to load dynamic guidelines.";
+        } catch (error) {
+            return "AI Core Connection failed.";
+        }
+    }
+
+    async function renderGuidelines() {
+        if (!aiResult) {
+            guidelineArea.innerHTML = `<p style="color: var(--danger); text-align:center; padding: 20px;">⚠️ No clinical data found. Please run an AI analysis on the dashboard first.</p>`;
+            return;
+        }
+
+        let primaryRisk = parseFloat(aiResult.probability) || 0;
+        let combinedAlerts = [];
+
+        if (primaryRisk >= 40) {
+            combinedAlerts.push({
+                disease: aiResult.disease,
+                probability: aiResult.probability
+            });
+        }
+
+        if (aiResult.secondary_alerts && aiResult.secondary_alerts.length > 0) {
+            aiResult.secondary_alerts.forEach(a => {
+                if(a.disease.toUpperCase() !== aiResult.disease.toUpperCase()) {
+                    combinedAlerts.push(a);
+                }
+            });
+        }
+
+        if (combinedAlerts.length > 0) {
+            guidelineArea.innerHTML = '';
+
+            for (const alert of combinedAlerts) {
+                const diseaseName = alert.disease.toUpperCase();
+                const safeId = alert.disease.replace(/\s/g, '');
+                
+                const box = document.createElement('div');
+                box.className = 'disease-box animate-pop';
+                box.innerHTML = `
+                    <h2 style="margin:0; font-size:1.3rem; color:var(--text-main); border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 15px;">
+                        ${diseaseName} ASSESSMENT (${alert.probability})
+                    </h2>
+                    <div id="ai-text-${safeId}" style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
+                        <i class="ri-loader-4-line spin-icon" style="color: var(--primary);"></i> Gemini AI is analyzing clinical parameters...
+                    </div>
+                `;
+                guidelineArea.appendChild(box);
+
+                const aiText = await fetchAIGuideline(alert.disease, alert.probability);
+                document.getElementById(`ai-text-${safeId}`).innerHTML = aiText.replace(/\n/g, '<br>');
+            }
+        } else {
+            guidelineArea.innerHTML = `<div class="disease-box" style="border-left-color: var(--success);">
+                <h2 style="color: var(--success);"><i class="ri-checkbox-circle-line"></i> Perfect Clinical Status</h2>
+                <p>All AI-analyzed parameters are currently within the established clinical safety limits.</p>
+            </div>`;
+        }
+    }
+
+    window.onload = function() {
+        if (!localStorage.getItem('aiResult')) {
+            document.getElementById('guidelines-area').innerHTML = 
+                `<p style="color: var(--danger); text-align:center; padding: 20px;">⚠️ No clinical data found. Go back and run AI analysis.</p>`;
+        } else {
+            renderPatientData(); // ডেটা রেন্ডার ফাংশন কল করা হলো
+            renderGuidelines();
+        }
+    };
+    </script>
+</body>
+</html>

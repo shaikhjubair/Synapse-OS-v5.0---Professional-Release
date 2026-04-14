@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Synapse OS - Next Generation AI Clinical Workspace">
+    <title>Synapse | Intelligent Clinical OS v5.0</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="theme-light">
+
+    <div id="system-loader" class="loader-overlay">
+        <div class="loader-content">
+            <i class="ri-brain-line pulse-icon"></i>
+            <h2>SYNAPSE OS v5.0</h2>
+            <p>Initializing 8 Neural Networks & 132 Parameters...</p>
+            <div class="progress-bar"><div class="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <div id="app-root" class="app-layout hidden">
+        
+        <aside class="sidebar glass-panel" id="main-sidebar">
+            
+            <div class="sidebar-brand">
+                <div class="brand-icon-wrapper">
+                    <i class="ri-pulse-line"></i>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-title">Synapse</span>
+                    <span class="brand-badge">PRO v5</span>
+                </div>
+                <button class="btn-collapse" id="toggle-sidebar" title="Toggle Sidebar">
+                    <i class="ri-menu-fold-line"></i>
+                </button>
+            </div>
+
+            <div class="sidebar-nav-scroll">
+                
+                <div class="nav-section">
+                    <span class="section-label">CLINICAL WORKSPACE</span>
+                    <ul class="nav-list">
+                        <li>
+                            <a href="#" class="nav-item active" id="nav-universal" onclick="switchAppTab('view-dashboard', 'nav-universal')">
+                                <i class="ri-dashboard-2-fill"></i>
+                                <span>Universal Deep Scan</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-item" id="nav-directory" onclick="switchAppTab('panel-patient-directory', 'nav-directory')">
+                                <i class="ri-group-line"></i>
+                                <span>Patient Directory</span>
+                                <span class="badge-count">12</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <span class="section-label">AI INTELLIGENCE</span>
+                    <ul class="nav-list">
+                        <li>
+                            <a href="#lab-ocr" class="nav-item" onclick="document.getElementById('ocr-file-input').click()">
+                                <i class="ri-file-text-line"></i>
+                                <span>Lab Report OCR</span>
+                                <span class="badge-new">NEW</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-item" id="nav-digital-twin" onclick="switchAppTab('panel-digital-twin', 'nav-digital-twin')">
+                                <i class="ri-mind-map"></i>
+                                <span>Digital Twin (MIMIC-III)</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#guidelines" class="nav-item" onclick="openGuidelinePage()">
+                                <i class="ri-robot-2-line"></i>
+                                <span>Gemini AI Tutor</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <span class="section-label">ADMINISTRATION</span>
+                    <ul class="nav-list">
+                        <li>
+                            <a href="#" class="nav-item" id="nav-audit-logs" onclick="switchAppTab('view-admin', 'nav-audit-logs')">
+                                <i class="ri-shield-keyhole-line"></i>
+                                <span>System Audit Logs</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-item" id="nav-preferences" onclick="switchAppTab('panel-preferences', 'nav-preferences')">
+                                <i class="ri-settings-4-line"></i>
+                                <span>Preferences</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            
+            <div class="sidebar-user-widget">
+                <img src="https://ui-avatars.com/api/?name=Admin&background=2563eb&color=fff" alt="User Avatar" class="avatar-img">
+                <div class="user-details">
+                    <span class="user-name">Dr. Shaikh Jubair</span>
+                    <span class="user-role">System Admin</span>
+                </div>
+                <button class="btn-logout" title="Secure Logout" onclick="logout()">
+                    <i class="ri-logout-circle-r-line"></i>
+                </button>
+            </div>
+            
+            <div class="server-status">
+                <span class="status-dot online"></span>
+                <span class="status-text">Flask Neural Engine: Online</span>
+            </div>
+
+        </aside>
+
+        <main class="main-wrapper" id="main-content">
+            
+            <header class="top-header glass-panel-sm">
+                
+                <div class="header-left">
+                    <h1 class="page-title" id="current-page-title">
+                        <i class="ri-dashboard-2-fill" style="color: var(--primary); margin-right: 8px;"></i>
+                        Command Center
+                    </h1>
+                    <p class="live-clock" id="live-clock">
+                        <i class="ri-time-line"></i> Waiting for time sync...
+                    </p>
+                </div>
+
+                <div class="header-right">
+                    <div class="search-widget">
+                        <i class="ri-search-line search-icon"></i>
+                        <input type="text" placeholder="Search patient ID, name, or condition (Press /)" id="global-search" autocomplete="off">
+                    </div>
+
+                    <div class="quick-tools">
+                        <button class="tool-btn" id="theme-switcher" title="Toggle Dark/Light Mode">
+                            <i class="ri-moon-clear-line"></i>
+                        </button>
+                        
+                        <div class="notification-wrapper">
+                            <div class="notification-wrapper" style="position: relative;">
+                            <button class="tool-btn" id="notif-bell" title="System Alerts" onclick="toggleNotifications()">
+                                <i class="ri-notification-3-line"></i>
+                                <span class="notif-badge">3</span>
+                            </button>
+                            
+                            <div id="notif-dropdown" class="hidden animate-pop" style="position: absolute; top: 50px; right: 0; width: 320px; background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 12px; padding: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); z-index: 100;">
+                                <h4 style="font-size: 0.9rem; font-weight: 800; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; margin-bottom: 10px; color: var(--text-main); display: flex; justify-content: space-between;">
+                                    System Alerts <span style="font-size: 0.7rem; background: var(--primary); color: white; padding: 2px 6px; border-radius: 4px;">3 New</span>
+                                </h4>
+                                <div style="display: flex; flex-direction: column; gap: 10px;">
+                                    <div style="background: rgba(37,99,235,0.05); padding: 10px; border-radius: 8px; border-left: 3px solid var(--primary);">
+                                        <p style="font-size: 0.8rem; color: var(--text-main); font-weight: 700;"><i class="ri-brain-line"></i> Synapse AI Online</p>
+                                        <span style="font-size: 0.7rem; color: var(--text-muted);">All 8 neural networks initialized successfully.</span>
+                                    </div>
+                                    <div style="background: rgba(16,185,129,0.05); padding: 10px; border-radius: 8px; border-left: 3px solid var(--success);">
+                                        <p style="font-size: 0.8rem; color: var(--text-main); font-weight: 700;"><i class="ri-database-2-line"></i> Database Sync</p>
+                                        <span style="font-size: 0.7rem; color: var(--text-muted);">Latest MIMIC-III parameters loaded.</span>
+                                    </div>
+                                    <div style="background: rgba(245,158,11,0.05); padding: 10px; border-radius: 8px; border-left: 3px solid var(--warning);">
+                                        <p style="font-size: 0.8rem; color: var(--text-main); font-weight: 700;"><i class="ri-shield-check-line"></i> Backup Completed</p>
+                                        <span style="font-size: 0.7rem; color: var(--text-muted);">Logs securely saved to central server.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+
+                        <button class="btn-danger-glow" id="btn-code-blue" onclick="document.getElementById('modal-code-blue').classList.remove('hidden')" title="Broadcast Emergency Alert">
+                            <i class="ri-alarm-warning-fill"></i> CODE BLUE
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="workspace-scroll" id="workspace-area">
+                
+                <div class="dashboard-grid layout-3-col app-panel" id="view-dashboard">
+                    
+                    <div class="grid-col left-panel">
+                        
+                        <div class="card glass-panel widget-patient animate-pop">
+                            <div class="card-header border-bottom">
+                                <h3 style="display: flex; align-items: center; gap: 8px;">
+                                    <i class="ri-user-heart-line" style="color: var(--primary);"></i> Patient Context
+                                </h3>
+                                <button class="icon-btn" id="btn-edit-patient" title="Edit Patient ID">
+                                    <i class="ri-edit-line"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="card-body form-grid">
+                                <div class="input-group">
+                                    <label>Patient Name (Optional)</label>
+                                    <div style="position: relative;">
+                                        <i class="ri-user-line" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                                        <input type="text" id="pat-name" class="input-field" placeholder="e.g. John Doe" style="padding-left: 35px;" autocomplete="off">
+                                    </div>
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label>System Patient ID / File No.</label>
+                                    <div class="read-only-box" id="pat-id-box">
+                                        <i class="ri-fingerprint-line" style="color: var(--primary);"></i> 
+                                        <span id="pat-id-text" style="letter-spacing: 1px;">Loading...</span>
+                                    </div>
+                                    <div style="position: relative;">
+                                        <i class="ri-key-line hidden" id="pat-id-icon" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--warning);"></i>
+                                        <input type="text" id="pat-id-input" class="input-field hidden" value="" style="padding-left: 35px; border-color: var(--warning);">
+                                    </div>
+                                </div>
+                                
+                                <div class="input-group split-group">
+                                    <div class="sub-group">
+                                        <label>Age (Years)</label>
+                                        <input type="number" id="pat-age" value="45" min="1" max="120" class="input-field text-center">
+                                    </div>
+                                    <div class="sub-group">
+                                        <label>Gender</label>
+                                        <div class="custom-select-wrapper">
+                                            <i class="ri-men-line select-icon" id="gender-icon"></i>
+                                            <select id="pat-gender" class="input-field select-large" onchange="document.getElementById('gender-icon').className = this.value === 'M' ? 'ri-men-line select-icon' : 'ri-women-line select-icon'">
+                                                <option value="M" selected>Male</option>
+                                                <option value="F">Female</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card glass-panel widget-disease animate-slide-up" style="animation-delay: 0.1s;">
+                            <div class="card-header border-bottom">
+                                <h3 style="display: flex; align-items: center; gap: 8px;">
+                                    <i class="ri-radar-line" style="color: var(--primary);"></i> AI Target
+                                </h3>
+                                <span class="badge-active" style="background: var(--primary); color: white; border: none; padding: 4px 10px;">
+                                    <i class="ri-flashlight-fill"></i> Auto-Triage
+                                </span>
+                            </div>
+                            
+                            <div class="card-body" style="text-align: center; padding: 40px 20px; display: flex; flex-direction: column; justify-content: center;">
+                                <div style="position: relative; display: inline-block; margin: 0 auto 20px auto;">
+                                    <i class="ri-radar-line pulse-icon" style="font-size: 3.5rem; color: var(--primary); display: block;"></i>
+                                    <i class="ri-search-eye-line" style="font-size: 1.5rem; color: var(--text-main); position: absolute; bottom: -5px; right: -5px; background: var(--glass-bg); border-radius: 50%; padding: 4px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);"></i>
+                                </div>
+                                
+                                <h4 style="color: var(--text-main); margin-bottom: 12px; font-size: 1.1rem; font-weight: 800;">
+                                    Universal Deep Scan Active
+                                </h4>
+                                
+                                <p class="helper-text" style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; padding: 0 10px;">
+                                    No manual selection required. Synapse OS will automatically route patient data through <strong style="color: var(--primary);">8 Specialist AI Models</strong> to detect <strong style="color: var(--danger);">28 specific diseases</strong> simultaneously.
+                                </p>
+                                
+                                <div style="margin-top: 20px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">
+                                    <span style="font-size: 0.65rem; background: rgba(0,0,0,0.05); padding: 4px 8px; border-radius: 20px; color: var(--text-muted); font-weight: 700;">Cardio</span>
+                                    <span style="font-size: 0.65rem; background: rgba(0,0,0,0.05); padding: 4px 8px; border-radius: 20px; color: var(--text-muted); font-weight: 700;">Renal</span>
+                                    <span style="font-size: 0.65rem; background: rgba(0,0,0,0.05); padding: 4px 8px; border-radius: 20px; color: var(--text-muted); font-weight: 700;">Hepatic</span>
+                                    <span style="font-size: 0.65rem; background: rgba(0,0,0,0.05); padding: 4px 8px; border-radius: 20px; color: var(--text-muted); font-weight: 700;">Metabolic</span>
+                                    <span style="font-size: 0.65rem; background: rgba(0,0,0,0.05); padding: 4px 8px; border-radius: 20px; color: var(--text-muted); font-weight: 700;">+4 More</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid-col center-panel">
+                        
+                        <div class="card glass-panel widget-vitals animate-pop" style="animation-delay: 0.2s;">
+                            <div class="card-header border-bottom">
+                                <div class="header-title">
+                                    <h3 style="display: flex; align-items: center; gap: 8px;">
+                                        <i class="ri-test-tube-fill" style="color: var(--primary);"></i> Clinical Parameters
+                                    </h3>
+                                    <span class="sub-text" style="font-size: 0.75rem; color: var(--text-muted);">
+                                        Showing 132 supported parameters dynamically
+                                    </span>
+                                </div>
+                                
+                                <div class="header-actions" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                    
+                                    <button class="btn-secondary-sm" onclick="openManualModal()" title="Add Parameters Manually" style="padding: 8px 12px; font-size: 0.85rem;">
+                                        <i class="ri-keyboard-line"></i> Manual
+                                    </button>
+                                    
+                                    <button class="btn-danger-sm" onclick="clearAllVitals()" title="Clear All Data" style="background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); padding: 8px 12px; border-radius: 8px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 0.85rem; transition: 0.3s;">
+                                        <i class="ri-delete-bin-7-line"></i> Clear
+                                    </button>
+
+                                    <button class="btn-secondary-sm" id="btn-upload-csv" onclick="handleCSVUpload()" title="Upload CSV File" style="padding: 8px 12px; font-size: 0.85rem;">
+                                        <i class="ri-file-upload-line"></i> CSV Data
+                                    </button>
+
+                                    <button class="btn-secondary-sm" id="btn-ocr-scan" title="Scan Lab Report via OCR" style="padding: 8px 12px; font-size: 0.85rem; background: var(--primary); color: white;">
+                                        <i class="ri-camera-lens-line"></i> OCR Scan
+                                    </button>
+                                    
+                                    <input type="file" id="ocr-file-input" accept="image/*" class="hidden">
+                                </div>
+                            </div>
+                            
+                            <div class="card-body scrollable-body" id="active-vitals-container" style="position: relative; padding-right: 5px;">
+                                
+                                <div class="empty-state" style="text-align: center; padding: 60px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+                                    <div style="position: relative; margin-bottom: 15px;">
+                                        <i class="ri-file-search-line" style="font-size: 4.5rem; color: var(--text-muted); opacity: 0.3;"></i>
+                                        <i class="ri-add-circle-fill" style="font-size: 1.8rem; color: var(--primary); position: absolute; bottom: 0; right: -10px; background: var(--bg-body); border-radius: 50%;"></i>
+                                    </div>
+                                    <h4 style="color: var(--text-main); margin-bottom: 8px;">No Clinical Data Detected</h4>
+                                    <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; max-width: 80%;">
+                                        Click <strong>"Manual"</strong> to enter values, or use <strong>"OCR Scan"</strong> to automatically extract data from a lab report image.
+                                    </p>
+                                </div>
+
+                            </div>
+                            
+                            <div class="card-footer form-actions" style="background: rgba(0,0,0,0.02);">
+                                <div class="action-status" id="form-validation-msg"></div>
+                                
+                                <button class="btn-primary-mega" id="btn-run-ai" title="Launch 8 Neural Networks">
+                                    <div class="btn-content" style="display: flex; align-items: center; gap: 12px;">
+                                        <i class="ri-brain-line" style="font-size: 1.5rem; animation: pulse 2s infinite;"></i> 
+                                        <span style="letter-spacing: 1px;">INITIALIZE SYNAPSE AI</span>
+                                    </div>
+                                    <i class="ri-arrow-right-line arrow" style="font-size: 1.2rem;"></i>
+                                </button>
+                                <p style="text-align: center; font-size: 0.65rem; color: var(--text-muted); margin-top: 8px; font-weight: 700;">
+                                    <i class="ri-shield-check-line"></i> End-to-End Encrypted Analysis
+                                </p>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                    <div class="grid-col right-panel">
+                        
+                        <div class="card glass-panel widget-result animate-pop" style="animation-delay: 0.3s;">
+                            <div class="card-header border-bottom">
+                                <h3 style="display: flex; align-items: center; gap: 8px;">
+                                    <i class="ri-heart-pulse-fill" style="color: var(--danger);"></i> AI Risk Assessment
+                                </h3>
+                                <button class="icon-btn-alert" id="btn-print-report" title="Export PDF Report">
+                                    <i class="ri-printer-line"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="card-body result-body" style="text-align: center; padding-top: 30px;">
+                                <div class="gauge-container">
+                                    <div class="risk-ring" id="ai-risk-ring" style="--p: 0; --c: #e2e8f0;">
+                                        <div class="ring-center">
+                                            <span class="score-number" id="ai-score">--</span>
+                                            <span class="score-label">RISK LEVEL</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="risk-status" id="ai-risk-status">
+                                    <div class="status-indicator" id="status-dot"></div>
+                                    <h2 class="status-text-main" id="status-text-main">Ready for Screening</h2>
+                                </div>
+                                <p class="confidence-text" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">
+                                    <i class="ri-shield-check-line" style="color: var(--success);"></i> AI Confidence Score: <span id="ai-confidence" class="bold-text">--%</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="card glass-panel widget-treatment animate-slide-up" style="animation-delay: 0.4s;">
+                            <div class="card-header border-bottom">
+                                <h3 style="display: flex; align-items: center; gap: 8px;">
+                                    <i class="ri-history-line" style="color: var(--primary);"></i> Historical Protocols
+                                </h3>
+                                <span class="badge-mimic" style="background: rgba(0,0,0,0.05); padding: 4px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 800; color: var(--text-muted);">MIMIC-III DB</span>
+                            </div>
+                            
+                            <div class="card-body treatment-body" style="padding: 15px;">
+                                <div class="disclaimer-alert">
+                                    <div class="icon-warn-wrapper">
+                                        <i class="ri-error-warning-fill"></i>
+                                    </div>
+                                    <div class="disclaimer-text">
+                                        <strong>WARNING: AI IS NOT A DOCTOR</strong>
+                                        <p>This is a screening tool. Historical treatments are for reference only. <strong>Always consult a physician.</strong></p>
+                                    </div>
+                                </div>
+
+                                <div class="treatment-content scrollable-body-sm" id="treatment-history-content" style="margin-top: 15px;">
+                                    <div class="empty-state" style="text-align: center; padding: 20px;">
+                                        <i class="ri-file-history-line" style="font-size: 2rem; color: var(--text-muted); opacity: 0.5;"></i>
+                                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">Run analysis to view historical treatments for similar patient profiles.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card-footer" style="text-align: center; background: rgba(0,0,0,0.02);">
+                                <button class="btn-text-primary" onclick="toggleAdminPanel()" style="background: none; border: none; color: var(--primary); font-weight: 700; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 5px; width: 100%;">
+                                    <i class="ri-shield-keyhole-line"></i> View Admin Audit Logs
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+                <div class="admin-panel animate-slide-up app-panel panel-hidden" id="view-admin">
+                    <div class="admin-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 20px; background: var(--glass-bg); border-radius: var(--radius-md); border: 1px solid var(--glass-border);">
+                        <div class="header-title">
+                            <h2 style="font-size: 1.4rem; font-weight: 800; color: var(--text-main);">System Audit Logs</h2>
+                            <p style="font-size: 0.85rem; color: var(--text-muted);">Secure, immutable record of all AI diagnostic activities.</p>
+                        </div>
+                        <div class="admin-actions" style="display: flex; gap: 10px;">
+                            <button class="btn-export-csv" onclick="exportLogsToCSV()">
+                                <i class="ri-file-excel-2-line"></i> Export CSV
+                            </button>
+                            
+                            <button class="btn-clear-logs" onclick="clearAuditLogsUI()">
+                                <i class="ri-eraser-line"></i> Clear Logs
+                            </button>
+                            
+                            <button class="btn-secondary-sm" onclick="toggleAdminPanel()" style="padding: 8px 15px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer;">
+                                <i class="ri-arrow-go-back-line"></i> Back to Dashboard
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="admin-table-wrapper scrollable-body" style="background: var(--glass-bg); border-radius: var(--radius-md); border: 1px solid var(--glass-border); overflow: hidden;">
+                        <table class="glass-table" style="width: 100%; text-align: left; border-collapse: collapse;">
+                            <thead style="background: rgba(0,0,0,0.03); font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">
+                                <tr>
+                                    <th style="padding: 15px;">Timestamp & Location</th>
+                                    <th style="padding: 15px;">Patient & Guest ID</th>
+                                    <th style="padding: 15px;">AI Diagnosis (Primary)</th>
+                                    <th style="padding: 15px;">Risk Level</th>
+                                    <th style="padding: 15px;">Status</th>
+                                    <th style="padding: 15px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-log-table" style="font-size: 0.9rem; color: var(--text-main);">
+                                <tr class="empty-row">
+                                    <td colspan="6" class="text-center" style="padding: 30px; text-align: center; color: var(--text-muted);">No diagnostic logs found. Run an analysis first.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="panel-patient-directory" class="app-panel panel-hidden" style="padding: 20px;">
+                    <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin-bottom: 5px;">Patient Directory</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 25px;">Manage and view all registered patient records.</p>
+                    
+                    <div style="background: var(--glass-bg); padding: 40px; text-align: center; border-radius: 12px; border: 1px dashed var(--glass-border);">
+                        <i class="ri-folder-user-line" style="font-size: 3rem; color: var(--text-muted); opacity: 0.5;"></i>
+                        <h3 style="margin-top: 15px; color: var(--text-main);">Database Syncing...</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem;">Connecting to central hospital registry. Patient list will populate shortly.</p>
+                        <button class="btn-primary" onclick="showToast('Enterprise Feature: Connecting to Central Hospital HL7 Database...', 'warning')" style="margin-top: 15px; padding: 8px 20px; background: var(--primary); color: #fff; border: none; border-radius: 8px;"><i class="ri-add-line"></i> Add New Patient</button>
+                    </div>
+                </div>
+
+                <div id="panel-digital-twin" class="app-panel panel-hidden" style="padding: 20px;">
+                    <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--primary); margin-bottom: 5px;"><i class="ri-dna-line"></i> Digital Twin (MIMIC-III)</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 25px;">Advanced physiological simulation using MIT MIMIC-III database.</p>
+                    
+                    <div style="background: linear-gradient(135deg, rgba(37,99,235,0.05), rgba(16,185,129,0.05)); padding: 40px; text-align: center; border-radius: 12px; border: 1px solid rgba(37,99,235,0.2);">
+                        <i class="ri-pulse-line spin-icon" style="font-size: 3.5rem; color: var(--primary);"></i>
+                        <h3 style="margin-top: 15px; color: var(--text-main);">Simulation Engine Offline</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem;">Please select a patient from the directory to generate a real-time digital twin.</p>
+                        <button class="btn-primary" id="btn-mimic-load" onclick="simulateDigitalTwin()" style="margin-top: 15px; padding: 8px 20px; background: var(--primary); color: #fff; border: none; border-radius: 8px;"><i class="ri-database-2-line"></i> Load MIMIC-III Data</button>
+                    </div>
+                </div>
+
+               <div id="panel-preferences" class="app-panel panel-hidden" style="padding: 20px;">
+                    <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin-bottom: 5px;">System Preferences</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 25px;">Configure AI parameters and system settings.</p>
+                    
+                    <div style="background: var(--glass-bg); padding: 25px; border-radius: 12px; border: 1px solid var(--glass-border); max-width: 600px;">
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; font-weight: 700; margin-bottom: 8px;">AI Model Sensitivity</label>
+                            <input type="range" min="1" max="100" value="85" style="width: 100%;">
+                            <small style="color: var(--text-muted);">Current: High (85%) - Optimized for critical care.</small>
+                        </div>
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; font-weight: 700; margin-bottom: 8px;">Auto-Generate PDF Reports</label>
+                            <select style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--glass-border); background: var(--bg-body); color: var(--text-main);">
+                                <option>Enabled (Recommended)</option>
+                                <option>Disabled</option>
+                            </select>
+                        </div>
+                        <button class="btn-primary" style="padding: 10px 20px; width: 100%; background: var(--primary); color: #fff; border: none; border-radius: 8px;"><i class="ri-save-3-line"></i> Save Configurations</button>
+                    </div>
+                </div>
+
+            </div> </main> 
+    </div> <div class="modal-overlay hidden" id="modal-report">
+        <div class="modal-paper animate-slide-up">
+            <button class="btn-close-modal" onclick="closeModal('modal-report')" title="Close Report">
+                <i class="ri-close-line"></i>
+            </button>
+            <div class="paper-header">
+                <div class="ph-brand"><i class="ri-hospital-line"></i> SYNAPSE HEALTH</div>
+                <div class="ph-meta">
+                    <span id="report-date-text" style="display: block; font-weight: 800;"></span>
+                    <span class="ph-ref" style="font-size: 0.8rem;">REF: #SYN-REPORT</span>
+                </div>
+            </div>
+            <div class="paper-body" id="report-content-area">
+                </div>
+            <div class="paper-footer">
+                <p><strong>Disclaimer:</strong> AI-Generated Clinical Assessment • Verify with Lab Results before taking action.</p>
+                <button class="btn-primary-print" onclick="window.print()">
+                    <i class="ri-printer-line"></i> Save PDF / Print
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay hidden" id="modal-code-blue">
+        <div class="modal-alert animate-pop">
+            <div class="alert-icon-wrapper"><i class="ri-alarm-warning-fill"></i></div>
+            <h2>Confirm Code Blue?</h2>
+            <p>This will broadcast a high-priority emergency alert for the active patient to all available on-call staff and the ICU unit.</p>
+            <div class="alert-actions-row">
+                <button class="btn-cancel" onclick="closeModal('modal-code-blue')">Cancel</button>
+                <button class="btn-confirm-danger" onclick="closeModal('modal-code-blue'); alert('Emergency Alert Broadcasted Successfully!')">CONFIRM ALERT</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal-overlay hidden" id="modal-manual-entry">
+        <div class="modal-paper animate-slide-up" style="width: 1000px; max-width: 95%;">
+            <div class="paper-header" style="padding: 20px 30px; border-bottom: 1px solid var(--glass-border);">
+                <h2 style="margin: 0; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; color: var(--text-main);">
+                    <i class="ri-keyboard-line" style="color: var(--primary);"></i> Manual Parameter Entry
+                </h2>
+                <button class="btn-close-modal" onclick="closeModal('modal-manual-entry')" style="position: static;"><i class="ri-close-line"></i></button>
+            </div>
+            <div class="paper-body scrollable-body" style="padding: 20px 30px; max-height: 60vh; background: rgba(0,0,0,0.02);">
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px; font-weight: 600;">
+                    Enter the available lab results below. Empty fields will be ignored by the Neural Networks.
+                </p>
+                <div id="mega-input-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;">
+                    </div>
+            </div>
+            <div class="paper-footer" style="padding: 15px 30px; text-align: right; background: var(--glass-bg);">
+                <button class="btn-primary-mega" style="width: auto; padding: 12px 30px; font-size: 1rem; min-height: 45px;" onclick="saveManualParams()">
+                    <i class="ri-save-line"></i> Save & Update Dashboard
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay hidden" id="modal-logout">
+        <div class="modal-alert animate-pop" style="border-top: 6px solid var(--primary);">
+            <div class="alert-icon-wrapper" style="color: var(--primary); animation: none;">
+                <i class="ri-logout-circle-r-line"></i>
+            </div>
+            <h2 style="margin-top: 10px;">Secure Logout?</h2>
+            <p>Are you sure you want to log out from the system?<br><span style="color: var(--danger); font-weight: 600;">All unsaved clinical data will be cleared.</span></p>
+            <div class="alert-actions-row">
+                <button class="btn-cancel" onclick="closeModal('modal-logout')">Cancel</button>
+                <button class="btn-confirm-danger" style="background: var(--primary); box-shadow: 0 4px 15px var(--primary-glow);" onclick="executeLogout()">Yes, Log Out</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay hidden" id="modal-clear-data">
+        <div class="modal-alert animate-pop" style="border-top: 6px solid var(--danger);">
+            <div class="alert-icon-wrapper" style="color: var(--danger); animation: none;">
+                <i class="ri-delete-bin-7-line"></i>
+            </div>
+            <h2 style="margin-top: 10px;">Clear All Data?</h2>
+            <p>Are you sure you want to clear all entered clinical parameters?<br><span style="color: var(--danger); font-weight: 600;">This action cannot be undone.</span></p>
+            <div class="alert-actions-row">
+                <button class="btn-cancel" onclick="closeModal('modal-clear-data')">Cancel</button>
+                <button class="btn-confirm-danger" onclick="executeClearVitals()">Yes, Clear Data</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    
+    <script src="script.js"></script>
+   
+    <div id="custom-toast" class="custom-toast">
+        <div class="toast-icon" id="toast-icon"><i class="ri-information-fill"></i></div>
+        <div class="toast-message" id="toast-message">System message here.</div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Synapse OS | Clinical Login</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body class="auth-body">
+    <div id="auth-portal" class="auth-overlay">
+        <div class="auth-modern-container glass-panel">
+            
+            <div class="auth-visual-side">
+                <div class="neural-network-bg"></div>
+                <div class="brand-content">
+                    <i class="ri-pulse-line brand-logo-large"></i>
+                    <h1>Synapse OS Pro</h1>
+                    <p>AI-Powered Clinical Risk Prediction System.</p>
+                    <div class="mimic-badge">
+                        <i class="ri-database-2-line"></i> Trained on 40,000+ Records
+                    </div>
+                </div>
+            </div>
+            
+            <div class="auth-form-side">
+                <div class="form-content">
+                    <h2>Clinical Access</h2>
+                    <p class="sub-text">Welcome !!! Log in to access full data.</p>
+                    
+                    <div class="auth-input-group">
+                        <i class="ri-mail-line input-icon"></i>
+                        <input type="text" id="login-email" placeholder="Clinical Email / Username" class="auth-input-modern-mega">
+                    </div>
+                    
+                    <div class="auth-input-group">
+                        <i class="ri-lock-2-line input-icon"></i>
+                        <input type="password" id="login-pass" placeholder="Password" class="auth-input-modern-mega">
+                    </div>
+                    
+                    <button class="btn-login-modern-mega" onclick="handleLogin()">
+                        Secure Log In <i class="ri-arrow-right-line"></i>
+                    </button>
+                    
+                    <a href="#" class="forgot-link-modern" onclick="showForgotMsg()">Forgot Password?</a>
+                    
+                    <div class="separator-text"><span>OR</span></div>
+                    
+                    <button class="btn-secondary-modern-mega" onclick="handleGuest()">
+                        <i class="ri-shield-user-line"></i> Continue as Guest
+                    </button>
+                    
+                    <div class="signup-footer-modern">
+                        <p>Don't have an account?</p>
+                        <a href="javascript:void(0)" onclick="alert('Registration portal is opening soon for everyone! Stay tuned.')">Create new account</a>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ১. লগইন এবং সিকিউরিটি লজিক
+        async function handleLogin() {
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-pass').value;
+
+            // ডিফল্ট সিকিউরিটি চেক
+            if (email === "admin@synapse.com" && pass === "jubair2026") {
+                localStorage.setItem('userMode', 'admin');
+                localStorage.setItem('userName', 'Dr. Shaikh Jubair');
+                window.location.href = 'dashboard.html'; 
+            } else {
+                alert("Invalid Clinical Credentials! Please try again.");
+            }
+        }
+
+        // ২. গেস্ট ইউজার ট্র্যাকিং (IP এবং Unique ID)
+        async function handleGuest() {
+            const guestId = 'GUEST-' + Math.floor(Math.random() * 100000);
+            
+            try {
+                const response = await fetch('https://ipapi.co/json/');
+                const data = await response.json();
+                const userIP = data.ip;
+                const location = `${data.city}, ${data.country_name}`;
+
+                // ব্রাউজারে রেকর্ড সেভ করা
+                localStorage.setItem('userMode', 'guest');
+                localStorage.setItem('guestID', guestId);
+                localStorage.setItem('userIP', userIP);
+                localStorage.setItem('userLoc', location);
+
+                alert(`Entering as Guest. ID: ${guestId}\nIP: ${userIP} recorded.`);
+                window.location.href = 'dashboard.html'; 
+            } catch (error) {
+                // ইন্টারনেট বা এপিআই ব্লক থাকলে ডিফল্ট গেস্ট এন্ট্রি
+                localStorage.setItem('userMode', 'guest');
+                localStorage.setItem('guestID', guestId);
+                window.location.href = 'dashboard.html';
+            }
+        }
+
+        // ৩. Forgot Password
+        function showForgotMsg() {
+            alert("Security Protocol: Please contact the System Administrator (Shaikh Jubair) to reset your clinical access key.");
+        }
+    </script>
+</body>
+</html>
