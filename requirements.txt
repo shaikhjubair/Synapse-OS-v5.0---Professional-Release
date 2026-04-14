@@ -6,3 +6,4 @@ scikit-learn
 xgboost
 gunicorn
 python-dotenv
+opencv-python-headless
