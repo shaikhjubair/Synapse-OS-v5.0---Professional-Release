@@ -17,7 +17,13 @@ import traceback
 import database
 
 app = Flask(__name__)
-CORS(app)
+# CORS-কে একদম পাওয়ারফুল করে দেওয়া হলো যাতে ভেরসেলকে ব্লক না করে
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+
+# মেইন লিংকে গেলে যেন 'Not Found' না দেখায়, সেজন্য একটা মেসেজ যোগ করা হলো
+@app.route('/', methods=['GET'])
+def home():
+    return jsonify({"status": "Online", "message": "Synapse API is running perfectly!"})
 
 try:
     database.init_db()
