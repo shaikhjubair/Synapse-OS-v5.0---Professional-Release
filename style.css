@@ -1557,3 +1557,87 @@ i.ri-printer-line:hover,
     box-shadow: 0 30px 60px -12px rgba(37, 99, 235, 0.25) !important;
     border: 1px solid rgba(255, 255, 255, 0.8) !important;
 }
+/* ১. Age ও Gender কন্টেইনার ফিক্স */
+.patient-context-inputs {
+    display: flex;
+    gap: 15px; /* ইনপুটের মাঝে স্পেসিং */
+    width: 100%;
+}
+
+/* Age ও Gender ফিল্ডের নিজস্ব স্টাইল */
+.age-input-field, .gender-input-field {
+    flex: 1; /* সমপরিমাণ জায়গা নেবে */
+    min-width: 0; /* রেসপনসিভনেস */
+}
+
+/* ছোট স্ক্রিনের জন্য (Media Query) */
+@media (max-width: 500px) {
+    .patient-context-inputs {
+        flex-direction: column; /* একে অপরের নিচে চলে যাবে */
+    }
+}
+
+/* ২. ডার্ক মোডে প্রিন্ট আইকন */
+.dark-theme .clinical-print-btn i {
+    color: #f8fafc; /* সাদার কাছাকাছি একটি ডার্ক-ফ্রেন্ডলি কালার */
+    opacity: 1;
+    filter: drop-shadow(0 0 5px rgba(248, 250, 252, 0.4));
+}
+
+/* ৩. Clinical Parameters সেকশন */
+.clinical-params-header {
+    display: flex;
+    justify-content: space-between; /* লেখা একপাশে, বাটন অন্যপাশে */
+    align-items: center;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.clinical-params-title {
+    margin: 0;
+    flex: 1; /* লেখা পুরো জায়গা নেবে */
+}
+
+.clinical-params-btn-group {
+    display: flex;
+    gap: 10px; /* বাটনের মাঝে স্পেসিং */
+    flex-shrink: 0; /* বাটন ছোট হবে না */
+}
+
+/* ৪. মিনিমাইজ করার সময় ওভারল্যাপ ফিক্স */
+.dashboard-header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* আইকনগুলোর মাঝে স্পেসিং */
+}
+
+/* সার্চ বার */
+.patient-search-input-wrapper {
+    flex: 1; /* পুরো জায়গা নিয়ে নেবে */
+    min-width: 150px; /* একদম ছোট হয়ে যাবে না */
+}
+
+/* আইকন গ্রুপ (চাঁদ, ঘণ্টা, প্রিন্ট) */
+.dashboard-action-icons {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0; /* তারা ছোট হবে না */
+}
+/* Login Page Logo with Heartbeat */
+.brand-logo-large-img {
+    width: 130px; /* লোগো ছোট/বড় করতে চাইলে এই সাইজ পাল্টাবে */
+    height: auto;
+    margin-bottom: 20px;
+    border-radius: 20px; /* লোগোর কোণা গোল করার জন্য */
+    animation: realHeartbeat 1.2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+    filter: drop-shadow(0 0 20px rgba(37, 99, 235, 0.5));
+}
+
+/* Dashboard & Guideline Logo */
+.sidebar-logo-img {
+    width: 35px;
+    height: auto;
+    margin-right: 10px;
+    border-radius: 8px;
+    vertical-align: middle;
+}
