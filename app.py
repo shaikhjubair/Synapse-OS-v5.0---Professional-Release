@@ -43,7 +43,8 @@ else:
 print("--- Synapse OS: Booting 8 Specialist Neural Networks ---")
 
 expert_prefixes = [
-    'expert_cardio', 'expert_renal'
+    'expert_cardio', 'expert_renal', 'expert_meta', 'expert_hepatic', 
+    'expert_resp', 'expert_sys', 'expert_hema', 'expert_tropical'
 ]
 
 synapse_brain = {}
