@@ -704,14 +704,6 @@ window.handleCSVUpload = function() {
     input.click();
 };
 
-/**
- * ----------------------------------------------------------------------------
- * PART 3: UNIVERSAL AUTO-TRIAGE ENGINE (THE AI CORE)
- * ----------------------------------------------------------------------------
- * Sends clinical data to the Flask Backend, processes the 8-Model
- * Deep Scan results, and renders the intelligence on the Dashboard.
- */
-
 window.runUniversalTriageAnalysis = async function(e) {
     if(e) e.preventDefault();
     
@@ -726,6 +718,19 @@ window.runUniversalTriageAnalysis = async function(e) {
     const btn = document.getElementById('btn-run-ai');
     const originalBtnHTML = btn.innerHTML;
     const ring = document.getElementById('ai-risk-ring');
+
+    // 🛑 নতুন ফিক্স: স্ক্যান চলার সময় ডাটা এডিট/ডিলিট পুরোপুরি লক করে দেওয়া
+    const vitalsContainer = document.getElementById('active-vitals-container');
+    const actionButtons = document.querySelector('.header-actions');
+    
+    if(vitalsContainer) {
+        vitalsContainer.style.pointerEvents = 'none'; // ডিলিট বাটন কাজ করবে না
+        vitalsContainer.style.opacity = '0.6'; // একটু ঝাপসা হয়ে যাবে
+    }
+    if(actionButtons) {
+        actionButtons.style.pointerEvents = 'none'; // ম্যানুয়াল/CSV/OCR বাটন কাজ করবে না
+        actionButtons.style.opacity = '0.5';
+    }
 
     btn.disabled = true;
     btn.innerHTML = `<i class="ri-loader-4-line spin-icon"></i> <span>RUNNING DEEP SCAN (8 MODELS)...</span>`;
@@ -773,12 +778,22 @@ window.runUniversalTriageAnalysis = async function(e) {
         console.error("Synapse Engine Error:", error);
         alert("⚠️ AI Core Connection Failed. \n\nPlease ensure your Flask server (app.py) is running on port 5000 and CORS is enabled.");
     } finally {
-        // ৫. স্ক্যানিং শেষে UI আগের অবস্থায় ফিরিয়ে আনা
+        // ৫. স্ক্যানিং শেষে UI আগের অবস্থায় ফিরিয়ে আনা এবং আনলক করা
         currentState.isScanning = false;
         btn.disabled = false;
         btn.innerHTML = originalBtnHTML;
         btn.style.boxShadow = '';
         if(ring) ring.style.opacity = "1";
+
+        // 🛑 স্ক্যান শেষ হলে বাটনগুলো আবার আনলক করা
+        if(vitalsContainer) {
+            vitalsContainer.style.pointerEvents = 'auto';
+            vitalsContainer.style.opacity = '1';
+        }
+        if(actionButtons) {
+            actionButtons.style.pointerEvents = 'auto';
+            actionButtons.style.opacity = '1';
+        }
     }
 };
 
