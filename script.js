@@ -546,123 +546,118 @@ window.executeDeepOCRScan = async function(e) {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Show loading state
+    // ১. লোডিং স্টেট চালু করা (UI Feedback)
     const btn = document.getElementById('btn-ocr-scan');
     const originalHtml = btn.innerHTML;
-    btn.innerHTML = `<i class="ri-loader-4-line spin-icon"></i> Scanning...`;
+    btn.innerHTML = `<i class="ri-loader-4-line spin-icon"></i> <span>ANALYZING DOCUMENT...</span>`;
     btn.disabled = true;
 
     try {
-        // Tesseract JS Initialization
-        const result = await Tesseract.recognize(file, 'eng', {
-            logger: m => console.log(m) // Optional: Track progress in console
-        });
+        // ২. Tesseract.js দিয়ে ইমেজ থেকে টেক্সট এক্সট্রাকশন
+        const result = await Tesseract.recognize(file, 'eng');
         const text = result.data.text.toLowerCase(); 
+        console.log("--- Raw OCR Text Output ---", text); // ডিবাগিংয়ের জন্য লগ
         
-        // Advanced Regex Extractor Function
-        const extractValue = (keyword) => {
-            // Looks for the keyword, ignores spaces/colons/dashes, grabs the next float
-            const regex = new RegExp(`${keyword}[^\\d]*(\\d+\\.?\\d*)`, 'i');
-            const match = text.match(regex);
-            return match ? parseFloat(match[1]) : null;
-        };
+        /**
+         * 🧠 SMART EXTRACTOR ENGINE
+         * এটি কিওয়ার্ডের পর সবগুলো সংখ্যা চেক করে এবং রেফারেন্স রেঞ্জ (যেমন ৪.৫ - ১০.৫) 
+         * চিনতে পারলে সেটাকে ইগনোর করে রুগীর আসল রেজাল্ট খুঁজে বের করে।
+         */
+        const extractValue = (keywordPattern) => {
+            // Regex ১: কিওয়ার্ডের পর থেকে পরবর্তী ৫০ ক্যারেক্টার পর্যন্ত নজর রাখা
+            const regex = new RegExp(`${keywordPattern}[^\\d]*([\\d.]+)`, 'gi');
+            const matches = [...text.matchAll(regex)];
+            
+            if (matches.length === 0) return null;
 
-        // Extract Demographics
-        const ageMatch = text.match(/age[\s:-]*(\d{1,3})/i) || text.match(/(\d{1,3})[\s]*(yrs|years|y\/o)/i);
-        if (ageMatch && ageMatch[1]) {
-            const ageInput = document.getElementById('pat-age');
-            if(ageInput) ageInput.value = parseInt(ageMatch[1]);
-        }
-
-        const genderMatch = text.match(/(?:gender|sex)[\s:-]*(male|female|m|f)/i);
-        if (genderMatch && genderMatch[1]) {
-            const genderSelect = document.getElementById('pat-gender');
-            if(genderSelect) {
-                const g = genderMatch[1].toLowerCase();
-                genderSelect.value = (g === 'male' || g === 'm') ? 'M' : 'F';
+            for (let match of matches) {
+                const foundVal = match[1];
+                const matchIndex = match.index;
+                
+                // ৩. RANGE DETECTION LOGIC: 
+                // সংখ্যার ঠিক পরেই কি কোনো ড্যাশ (-) বা 'to' আছে? যদি থাকে তবে এটি রেফারেন্স রেঞ্জ।
+                const textAfter = text.substring(matchIndex + match[0].length, matchIndex + match[0].length + 10);
+                const isRange = /^\s*(-|to|—|–)\s*[\d.]+/i.test(textAfter);
+                
+                // যদি এটি রেঞ্জ হয়, তবে পরের সংখ্যাটি খোঁজার চেষ্টা করো
+                if (isRange) continue; 
+                
+                return parseFloat(foundVal);
             }
-        }
-
-        // Deep Extract Clinical Findings
-        const findings = {
-            'heart_rate': extractValue('heart rate') || extractValue('pulse') || extractValue('hr'),
-            'respiratory_rate': extractValue('resp rate') || extractValue('respiratory rate') || extractValue('\\brr\\b'),
-            'bp_systolic': extractValue('systolic bp') || extractValue('systolic'),
-            'bp_diastolic': extractValue('diastolic bp') || extractValue('diastolic'),
-            'temperature': extractValue('temp') || extractValue('temperature'),
-            'hba1c': extractValue('hba1c') || extractValue('a1c'),
-            'egfr': extractValue('egfr') || extractValue('gfr'),
-            
-            // Gas & O2 Fixes (handling '0' vs 'O')
-            'po2': extractValue('po2') || extractValue('p02') || extractValue('\\bpo2\\b'),
-            'pco2': extractValue('pco2') || extractValue('pc02') || extractValue('\\bpco2\\b'),
-            'sao2': extractValue('sao2') || extractValue('sa02') || extractValue('oxygen saturation') || extractValue('spo2'),
-            'ph': extractValue('\\bph\\b'), 
-            'base_excess': extractValue('base excess') || extractValue('be'),
-            
-            // Common Chemistry
-            'glucose': extractValue('glucose') || extractValue('sugar') || extractValue('fbs') || extractValue('rbs'),
-            'cholesterol': extractValue('cholesterol') || extractValue('chol'),
-            'triglycerides': extractValue('triglycerides') || extractValue('trig'),
-            'creatinine': extractValue('creatinine') || extractValue('creat') || extractValue('cr'),
-            'bun': extractValue('bun') || extractValue('blood urea nitrogen'),
-            
-            // CBC
-            'wbc_count': extractValue('wbc') || extractValue('white blood cell') || extractValue('leukocyte'),
-            'rbc': extractValue('rbc') || extractValue('red blood cell') || extractValue('erythrocyte'),
-            'hemoglobin': extractValue('hemoglobin') || extractValue('hb') || extractValue('hgb'),
-            'hematocrit': extractValue('hematocrit') || extractValue('hct'),
-            'platelets': extractValue('platelet') || extractValue('plt') || extractValue('thrombocyte'),
-            'mcv': extractValue('mcv'),
-            
-            // Hepatic
-            'sgpt': extractValue('sgpt') || extractValue('alt'),
-            'sgot': extractValue('sgot') || extractValue('ast'),
-            'bilirubin': extractValue('bilirubin') || extractValue('total bili'),
-            'albumin': extractValue('albumin') || extractValue('alb'),
-            'alp': extractValue('alkaline phosphatase') || extractValue('alp'),
-            
-            // Electrolytes & Specifics
-            'sodium': extractValue('sodium') || extractValue('\\bna\\b'),
-            'potassium': extractValue('potassium') || extractValue('\\bk\\+?\\b'),
-            'calcium': extractValue('calcium') || extractValue('\\bca\\b'),
-            'chloride': extractValue('chloride') || extractValue('\\bcl\\b'),
-            'lactate': extractValue('lactate'),
-            'crp': extractValue('crp') || extractValue('c-reactive protein'),
-            'troponin': extractValue('troponin') || extractValue('trop t'),
-            'ck_mb': extractValue('ck-mb') || extractValue('ckmb'),
-            'd_dimer': extractValue('d-dimer') || extractValue('d dimer')
+            // যদি সব ফিল্টার ফেইল করে, তবে প্রথম পাওয়া সংখ্যাটিই রিটার্ন করবে
+            return parseFloat(matches[0][1]);
         };
 
+        // ৪. বানান সমস্যা সমাধান (ব্রিটিশ ও আমেরিকান উভয় বানানই সাপোর্ট করবে)
+        const findings = {
+            'heart_rate': extractValue('(heart rate|pulse|hr)'),
+            'respiratory_rate': extractValue('(resp rate|respiratory rate|\\brr\\b)'),
+            'bp_systolic': extractValue('(systolic|sys)'),
+            'bp_diastolic': extractValue('(diastolic|dia)'),
+            'temperature': extractValue('(temp|temperature)'),
+            'glucose': extractValue('(glucose|fbs|rbs|sugar|glu)'),
+            
+            // CBC Section (Spelling Variations & Range Safety)
+            'wbc_count': extractValue('(wbc|white blood cell|leukocyte)'),
+            'rbc': extractValue('(rbc|red blood cell|erythrocyte)'),
+            'hemoglobin': extractValue('(haemoglobin|hemoglobin|hb|hgb)'),
+            'hematocrit': extractValue('(haematocrit|hematocrit|hct)'),
+            'platelets': extractValue('(platelet|platelets|plt)'),
+            
+            // Renal & Metabolic
+            'creatinine': extractValue('(creatinine|creat|cr)'),
+            'bun': extractValue('(bun|urea nitrogen|urea)'),
+            'hba1c': extractValue('(hba1c|a1c)'),
+            'egfr': extractValue('(egfr|gfr)'),
+            
+            // Hepatic (Liver)
+            'sgpt': extractValue('(sgpt|alt)'),
+            'sgot': extractValue('(sgot|ast)'),
+            'bilirubin': extractValue('(bilirubin|total bili|bili)'),
+            'albumin': extractValue('(albumin|alb)'),
+            'alp': extractValue('(alkaline phosphatase|alp)'),
+            
+            // Electrolytes
+            'sodium': extractValue('(sodium|\\bna\\b)'),
+            'potassium': extractValue('(potassium|\\bk\\+?\\b)'),
+            'lactate': extractValue('lactate'),
+            'ph': extractValue('\\bph\\b')
+        };
+
+        // ৫. ড্যাশবোর্ড আপডেট করা
         let foundCount = 0;
         for (const [id, value] of Object.entries(findings)) {
-            if (value !== null) {
-                let finalValue = value;
+            if (value !== null && !isNaN(value)) {
                 const paramConfig = ALL_MEGA_PARAMS.find(p => p.id === id);
+                let finalValue = value;
+                
+                // স্যানিটি চেক (মেডিকেল সীমার বাইরে গেলে রিসেট)
                 if (paramConfig) {
-                    // Sanity check
                     if (finalValue > paramConfig.max) finalValue = paramConfig.max;
                     if (finalValue < paramConfig.min) finalValue = paramConfig.min;
                 }
+                
                 activePatientData[id] = finalValue; 
                 foundCount++;
             }
         }
 
+        // ৬. ইউজারকে রেজাল্ট জানানো
         if (foundCount > 0) {
             renderActiveVitalsOnDashboard();
-            alert(`OCR Scan Complete! Successfully extracted ${foundCount} clinical parameters.`);
+            showToast(`OCR Scan Successful! Extracted ${foundCount} medical parameters correctly.`, "success");
         } else {
-            alert(`OCR Scan Warning: Could not detect clear medical parameters from this image. Please enter manually.`);
+            showToast("OCR Warning: Could not identify clinical values. Try a higher-resolution image.", "warning");
         }
 
     } catch (error) {
-        console.error("OCR Engine Error:", error);
-        alert("OCR Engine Error. Failed to process the image document.");
+        console.error("Critical OCR Engine Error:", error);
+        showToast("AI Vision Engine failed to process the document.", "danger");
     } finally {
+        // ৭. বাটন রিসেট
         btn.innerHTML = originalHtml;
         btn.disabled = false;
-        e.target.value = ''; // Reset input
+        e.target.value = ''; 
     }
 };
 
