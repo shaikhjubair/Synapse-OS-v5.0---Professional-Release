@@ -1509,3 +1509,51 @@ i.ri-printer-line:hover,
 #view-dashboard:not(.panel-hidden) {
     display: grid !important;
 }
+
+/* ==========================================================================
+   PART 2 FIX: LOGIN PAGE BEAUTIFICATION & HEARTBEAT ANIMATION
+   ========================================================================== */
+
+/* ১. একদম সত্যিকারের হার্টবিটের মতো অ্যানিমেশন */
+.brand-logo-large {
+    font-size: 5.5rem;
+    color: #ff2a5f; /* চমৎকার একটি রেড-পিংক গ্লো */
+    display: inline-block;
+    animation: realHeartbeat 1.2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+    filter: drop-shadow(0 0 25px rgba(255, 42, 95, 0.6));
+    margin-bottom: 15px;
+}
+
+@keyframes realHeartbeat {
+    0% { transform: scale(1); }
+    15% { transform: scale(1.25); filter: drop-shadow(0 0 35px rgba(255, 42, 95, 0.9)); }
+    30% { transform: scale(1); }
+    45% { transform: scale(1.15); filter: drop-shadow(0 0 25px rgba(255, 42, 95, 0.7)); }
+    100% { transform: scale(1); }
+}
+
+/* ২. ব্যাকগ্রাউন্ডের কালারফুল অটোমেশন (Moving Gradient) */
+.auth-visual-side { 
+    flex: 1; 
+    position: relative; 
+    /* এখানে ৩-৪টা সুন্দর কালার মিক্স করে অটোমেটিক মুভ করানো হচ্ছে */
+    background: linear-gradient(-45deg, #2563eb, #7c3aed, #e11d48, #0ea5e9); 
+    background-size: 400% 400%;
+    animation: moveGradient 12s ease infinite;
+    display: flex; flex-direction: column; justify-content: center; 
+    align-items: center; padding: 40px; color: white; text-align: center; 
+    overflow: hidden;
+    border-right: 1px solid rgba(255,255,255,0.1);
+}
+
+@keyframes moveGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* ৩. লগইন বক্সের শ্যাডো এবং গ্লাস ইফেক্ট আরেকটু প্রিমিয়াম করা */
+.auth-modern-container {
+    box-shadow: 0 30px 60px -12px rgba(37, 99, 235, 0.25) !important;
+    border: 1px solid rgba(255, 255, 255, 0.8) !important;
+}
