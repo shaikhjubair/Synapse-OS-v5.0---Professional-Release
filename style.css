@@ -1641,3 +1641,56 @@ i.ri-printer-line:hover,
     border-radius: 8px;
     vertical-align: middle;
 }
+
+/* ==========================================================================
+   FINAL RESPONSIVE FIXES (AGE/GENDER, HEADER & CLINICAL PARAMETERS)
+   ========================================================================== */
+
+/* ১. Age ও Gender একে অপরের ভেতর ঢুকে যাওয়ার ফিক্স */
+.split-group {
+    display: flex;
+    flex-wrap: wrap !important; /* জায়গা না পেলে নিচে চলে যাবে */
+    gap: 15px;
+}
+.sub-group {
+    flex: 1 1 120px !important; /* মিনিমাম ১২০পিক্সেল জায়গা নেবে, নাহলে র‍্যাপ করবে */
+}
+
+/* ২. Clinical Parameters বাটনের ওভারল্যাপ ফিক্স */
+.widget-vitals .card-header {
+    flex-wrap: wrap !important; /* লেখা এবং বাটন জায়গা না পেলে নিচে চলে যাবে */
+    gap: 15px;
+}
+.widget-vitals .header-actions {
+    display: flex !important; /* HTML এর ইনলাইন গ্রিড স্টাইলকে ওভাররাইড করা হলো */
+    flex-wrap: wrap !important;
+    justify-content: flex-end;
+    flex: 1 1 250px;
+    gap: 10px !important;
+}
+
+/* ৩. স্ক্রিন ছোট করলে Search Bar এবং Dark Mode আইকন ওভারল্যাপ ফিক্স */
+.top-header {
+    height: auto !important; /* ১০০পিক্সেল ফিক্সড হাইট সরিয়ে দেওয়া হলো */
+    min-height: 100px;
+    flex-wrap: wrap !important;
+    gap: 15px;
+    padding-bottom: 20px !important;
+}
+.header-right {
+    flex-wrap: wrap !important;
+    flex: 1 1 100%; 
+    justify-content: flex-end;
+}
+.search-widget {
+    flex: 1 1 200px !important; /* সার্চ বার স্ক্রিন অনুযায়ী ছোট-বড় হবে */
+    max-width: 100%;
+}
+.search-widget input {
+    width: 100% !important; /* ইনপুট বক্স যেন বাইরে না যায় */
+}
+
+/* ৪. মোবাইল বা ছোট স্ক্রিনে Search Bar ফোকাস করলে ওভারফ্লো ফিক্স */
+.search-widget input:focus {
+    width: 100% !important;
+}
