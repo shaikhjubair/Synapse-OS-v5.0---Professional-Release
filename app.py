@@ -5,7 +5,7 @@ import re
 import base64
 import cv2
 import json
-from paddleocr import PaddleOCR
+#from paddleocr import PaddleOCR
 from google import genai
 from google.genai import types
 from flask import Flask, request, jsonify
@@ -71,8 +71,8 @@ try:
     import logging
     logging.getLogger("ppocr").setLevel(logging.ERROR) 
     
-    ocr_engine = PaddleOCR(use_textline_orientation=True, lang='en')
-    print(" 🟢 Loaded: PaddleOCR Local Engine")
+    #ocr_engine = PaddleOCR(use_textline_orientation=True, lang='en')
+    #print(" 🟢 Loaded: PaddleOCR Local Engine")
 except Exception as e:
     print(f" 🔴 Error loading PaddleOCR: {e}")
 
