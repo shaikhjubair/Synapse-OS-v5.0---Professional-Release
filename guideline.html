@@ -82,7 +82,8 @@
 
     async function fetchAIGuideline(disease, probability) {
         try {
-                fetch('https://synapse-os-api-jubair.onrender.com/generate_guideline', {
+            // FIXED: Added "const response = await" and updated the new Render API URL
+            const response = await fetch('https://synapse-os-v5-0-professional-release.onrender.com/generate_guideline', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

@@ -7,8 +7,9 @@
  */
 
 const CONFIG = {
-    apiEndpoint: 'https://synapse-os-api-jubair.onrender.com/predict',
-    logsEndpoint: 'https://synapse-os-api-jubair.onrender.com/get_all_logs',
+    // রেন্ডারের নতুন লিংকটি এখানে বসাও
+    apiEndpoint: 'https://synapse-os-v5-0-professional-release.onrender.com/predict',
+    logsEndpoint: 'https://synapse-os-v5-0-professional-release.onrender.com/get_all_logs',
     colors: { 
         safe: '#10b981', 
         warning: '#f59e0b', 
