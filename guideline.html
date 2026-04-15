@@ -82,7 +82,7 @@
 
     async function fetchAIGuideline(disease, probability) {
         try {
-            const response = await fetch('http://127.0.0.1:5000/generate_guideline', {
+                fetch('https://synapse-os-api-jubair.onrender.com/generate_guideline', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

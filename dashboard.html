@@ -475,15 +475,18 @@
 
                 <div id="panel-digital-twin" class="app-panel panel-hidden" style="padding: 20px;">
                     <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--primary); margin-bottom: 5px;"><i class="ri-dna-line"></i> Digital Twin (MIMIC-III)</h2>
-                    <p style="color: var(--text-muted); margin-bottom: 25px;">Advanced physiological simulation using MIT MIMIC-III database.</p>
+                    <p id="dt-mapping-text" style="color: var(--text-muted); margin-bottom: 25px;">Advanced physiological simulation using MIT MIMIC-III database.</p>
                     
-                    <div style="background: linear-gradient(135deg, rgba(37,99,235,0.05), rgba(16,185,129,0.05)); padding: 40px; text-align: center; border-radius: 12px; border: 1px solid rgba(37,99,235,0.2);">
-                        <i class="ri-pulse-line spin-icon" style="font-size: 3.5rem; color: var(--primary);"></i>
-                        <h3 style="margin-top: 15px; color: var(--text-main);">Simulation Engine Offline</h3>
-                        <p style="color: var(--text-muted); font-size: 0.9rem;">Please select a patient from the directory to generate a real-time digital twin.</p>
-                        <button class="btn-primary" id="btn-mimic-load" onclick="simulateDigitalTwin()" style="margin-top: 15px; padding: 8px 20px; background: var(--primary); color: #fff; border: none; border-radius: 8px;"><i class="ri-database-2-line"></i> Load MIMIC-III Data</button>
+                    <div id="dt-content-area">
+                        <div style="background: linear-gradient(135deg, rgba(37,99,235,0.05), rgba(16,185,129,0.05)); padding: 40px; text-align: center; border-radius: 12px; border: 1px solid rgba(37,99,235,0.2);">
+                            <i class="ri-pulse-line spin-icon" style="font-size: 3.5rem; color: var(--primary);"></i>
+                            <h3 style="margin-top: 15px; color: var(--text-main);">Simulation Engine Offline</h3>
+                            <p style="color: var(--text-muted); font-size: 0.9rem;">Please select a patient from the directory to generate a real-time digital twin.</p>
+                            <button class="btn-primary" id="btn-mimic-load" onclick="simulateDigitalTwin()" style="margin-top: 15px; padding: 8px 20px; background: var(--primary); color: #fff; border: none; border-radius: 8px;"><i class="ri-database-2-line"></i> Load MIMIC-III Data</button>
+                        </div>
                     </div>
                 </div>
+
 
                <div id="panel-preferences" class="app-panel panel-hidden" style="padding: 20px;">
                     <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin-bottom: 5px;">System Preferences</h2>

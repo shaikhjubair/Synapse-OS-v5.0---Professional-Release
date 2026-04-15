@@ -1252,8 +1252,9 @@ document.addEventListener('click', function(event) {
 // =========================================================
 window.simulateDigitalTwin = function() {
     const btn = document.getElementById('btn-mimic-load');
-    const container = document.getElementById('panel-digital-twin');
-
+    // নিচের এই লাইনটি পরিবর্তন করো (panel-digital-twin এর জায়গায় dt-content-area হবে)
+    const container = document.getElementById('dt-content-area');
+    
     if(!btn || !container) return;
 
     // 🛑 ফিক্স ১: ইনপুট ভ্যালিডেশন (প্যারামিটার না থাকলে সিমুলেশন হবে না)
