@@ -988,7 +988,7 @@ window.generateClinicalReport = function() {
         day: '2-digit', month: 'long', year: 'numeric'
     });
 
-    const status = document.getElementById('status-text-main').innerText.replace(/<[^>]*>?/gm, ''); // Remove HTML tags
+    const status = document.getElementById('status-text-main').innerText.replace(/<[^>]*>?/gm, ''); 
     let mainProb = parseFloat(data.probability);
     let statusColor = mainProb >= 70 ? '#ef4444' : (mainProb >= 40 ? '#f59e0b' : '#10b981');
     
@@ -997,7 +997,8 @@ window.generateClinicalReport = function() {
     const patGenderBox = document.getElementById('pat-gender');
     const patGender = patGenderBox ? patGenderBox.options[patGenderBox.selectedIndex].text : '--';
 
-    let hasSecondary = data.secondary_alerts && data.secondary_alerts.length > 0;
+    // 🛑 ফিক্স: এখানে আমরা all_detailed_risks ব্যবহার করছি এবং মেইন রোগটাকে লিস্ট থেকে বাদ দিচ্ছি
+    const allOtherRisks = data.all_detailed_risks ? data.all_detailed_risks.filter(r => r.disease !== data.disease) : [];
     
     let reportHTML = `
         <div style="text-align: center; border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 25px;">
@@ -1017,14 +1018,14 @@ window.generateClinicalReport = function() {
         </div>
     `;
 
-    // Differential Diagnosis (Secondary Alerts)
-    if(hasSecondary) {
+    // 🛑 ফিক্স: Comprehensive Differential Diagnosis (সবগুলো রিস্ক দেখাবে)
+    if(allOtherRisks.length > 0) {
         reportHTML += `
             <div style="background: #fffbeb; border: 2px dashed #f59e0b; padding: 15px; border-radius: 10px; margin-bottom: 25px;">
-                <h4 style="color: #d97706; margin: 0 0 8px 0; font-size: 1rem;"><i class="ri-alarm-warning-fill"></i> DIFFERENTIAL DIAGNOSIS:</h4>
-                <p style="margin: 0 0 8px 0; color: #92400e; font-size: 0.85rem; font-weight: 600;">AI also detected the following secondary risks:</p>
-                <ul style="color: #b45309; font-weight: 800; font-size: 0.9rem; padding-left: 20px; margin: 0;">
-                    ${data.secondary_alerts.map(a => `<li>Risk of ${a.disease} (${a.probability}%) - <span style="font-size:0.75rem; color:#d97706;">[${a.expert_panel || 'GENERAL'}]</span></li>`).join('')}
+                <h4 style="color: #d97706; margin: 0 0 8px 0; font-size: 1rem;"><i class="ri-alarm-warning-fill"></i> COMPREHENSIVE DIFFERENTIAL DIAGNOSIS:</h4>
+                <p style="margin: 0 0 8px 0; color: #92400e; font-size: 0.85rem; font-weight: 600;">AI also detected the following secondary risks across all expert models:</p>
+                <ul style="color: #b45309; font-weight: 800; font-size: 0.9rem; padding-left: 20px; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    ${allOtherRisks.map(a => `<li>Risk of ${a.disease} (${a.probability}%) <br><span style="font-size:0.65rem; color:#d97706; background: rgba(217, 119, 6, 0.1); padding: 2px 6px; border-radius: 4px;">${a.expert_panel || 'GENERAL'}</span></li>`).join('')}
                 </ul>
             </div>`;
     }
