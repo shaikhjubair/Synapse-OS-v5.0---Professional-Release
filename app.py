@@ -1,5 +1,9 @@
 import os
-os.environ['PADDLE_PDX_DISABLE_MODEL_SOURCE_CHECK'] = 'True'
+from dotenv import load_dotenv
+
+# API Key লোড করার বেটার পদ্ধতি - একদম শুরুতে রাখা হলো
+load_dotenv() 
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 import re
 import base64
@@ -17,10 +21,10 @@ import traceback
 import database
 
 app = Flask(__name__)
-# CORS-কে একদম পাওয়ারফুল করে দেওয়া হলো যাতে ভেরসেলকে ব্লক না করে
+# CORS-কে একদম পাওয়ারফুল করে দেওয়া হলো যাতে ভেরসেলকে ব্লক না করে
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
-# মেইন লিংকে গেলে যেন 'Not Found' না দেখায়, সেজন্য একটা মেসেজ যোগ করা হলো
+# মেইন লিংকে গেলে যেন 'Not Found' না দেখায়, সেজন্য একটা মেসেজ যোগ করা হলো
 @app.route('/', methods=['GET'])
 def home():
     return jsonify({"status": "Online", "message": "Synapse API is running perfectly!"})
@@ -31,14 +35,11 @@ try:
 except Exception as e:
     print(f"❌ Database initialization failed: {e}")
 
-from dotenv import load_dotenv
-load_dotenv() 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 if GEMINI_API_KEY:
     client = genai.Client(api_key=GEMINI_API_KEY)
-    print("✅ Gemini AI Connected.")
+    print("✅ Neural Engine Connected.")
 else:
-    print("⚠️ Warning: Gemini API Key not found!")
+    print("⚠️ Warning: Gemini API Key not found! Please check your .env file.")
 
 print("--- Synapse OS: Booting 8 Specialist Neural Networks ---")
 
@@ -206,34 +207,43 @@ def predict():
                 })
             
 
-# ==============================================================
+        # ==============================================================
         # 🧠 THE CLINICAL OVERRIDE ENGINE (HARDCODED MEDICAL RULES)
         # ==============================================================
-        # এআই এর রেজাল্ট সর্ট করার ঠিক আগে আমরা এই লজিক বসাবো, যা স্পেসিফিক ডেটা দেখলে প্রবাবিলিটি বাড়িয়ে দেবে
         
         for result in all_results:
             dis = result['disease'].lower()
             
-            # Rule 1: DKA (Severe Diabetes) - গ্লুকোজ অনেক হাই এবং pH লো হলে ডায়াবেটিসকে ৯৯.৫% করে ১ নম্বরে আনবে
+            # Rule 1: DKA (Severe Diabetes)
             if 'diabetes' in dis:
                 if processed_vitals.get('glucose', 0) > 400 and processed_vitals.get('ph', 14.0) < 7.3:
                     result['probability'] = 99.5  
                     result['disease'] = "Diabetic Ketoacidosis (DKA)"
                     
-            # Rule 2: Severe Renal Failure - ক্রিয়েটিনিন ৪ এর ওপরে মানেই কিডনির অবস্থা খারাপ
+            # Rule 2: Severe Renal Failure
             if 'renal' in dis or 'kidney' in dis:
                 if processed_vitals.get('creatinine', 0) > 4.0:
                     result['probability'] = max(result['probability'], 98.0)
                     
-            # Rule 3: Myocardial Infarction (হার্ট অ্যাটাক) - ট্রোপোনিন থাকা মানেই হার্ট অ্যাটাক নিশ্চিত
+            # Rule 3: Myocardial Infarction (হার্ট অ্যাটাক)
             if 'myocardial' in dis or 'heart attack' in dis or 'cardiac' in dis:
                 if processed_vitals.get('troponin', 0) > 0.5 or processed_vitals.get('ck_mb', 0) > 50:
                     result['probability'] = max(result['probability'], 99.0)
                     
-            # Rule 4: Severe Respiratory Failure - অক্সিজেন লেভেল ৮৫ এর নিচে নামলে
+            # Rule 4: Severe Respiratory Failure
             if 'respiratory' in dis or 'pneumonia' in dis:
                 if processed_vitals.get('sao2', 100) < 85:
                     result['probability'] = max(result['probability'], 97.0)
+
+            # Rule 5: Prevent False Sepsis (THE FIX)
+            if 'sepsis' in dis:
+                has_fever = processed_vitals.get('temperature', 37) > 38.0
+                has_high_wbc = processed_vitals.get('wbc_count', 8000) > 12000
+                has_low_bp = processed_vitals.get('bp_systolic', 120) < 90
+                
+                # যদি সেপসিসের কোনো শক্তিশালী লক্ষণ না থাকে, প্রবাবিলিটি অনেক কমিয়ে দাও
+                if not (has_fever or has_high_wbc or has_low_bp):
+                    result['probability'] = min(result['probability'], 20.0)
 
         # Safety Net: যদি এআই কোনো কারণে ডায়াবেটিস ধরতেই না পারে, কিন্তু গ্লুকোজ মারাত্মক লেভেলে থাকে!
         has_diabetes = any('diabet' in r['disease'].lower() for r in all_results)
@@ -251,7 +261,6 @@ def predict():
         main_alert = all_results[0]
         
         alerts = [r for r in all_results if r['disease'] != main_alert['disease']]
-        
         alerts = alerts[:3] 
 
         database.save_log(patient_id, guest_id, ip, location, main_alert['disease'], f"{main_alert['probability']}%", alerts)
@@ -358,8 +367,6 @@ def get_logs():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
-# ... [তোমার আগের কোড এখানে থাকবে] ...
-
 @app.route('/generate_guideline', methods=['POST'])
 def generate_guideline():
     try:
@@ -373,7 +380,6 @@ def generate_guideline():
 
         # মডিফাইড প্রম্পট: মানুষের মতো আউটপুটের জন্য স্ট্রিক্ট ইনস্ট্রাকশন
         prompt = (
-            f"বয়স: {age}, লিঙ্গ: {gender}\n"
             f"ল্যাব রিপোর্ট ও ভাইটালস: {vitals}\n\n"
             f"উপরোক্ত ডেটার ওপর ভিত্তি করে একজন বিশেষজ্ঞ চিকিৎসকের মতো সরাসরি ক্লিনিক্যাল অ্যাসেসমেন্ট এবং গাইডলাইন দাও। '{disease_name}' এর ঝুঁকির বিষয়টিও বিবেচনায় রাখবে।\n\n"
             
@@ -400,7 +406,7 @@ def generate_guideline():
                 contents=prompt
             )
         
-        # যদি মডেল ভুল করে কোনো স্পেশাল ক্যারেক্টার দিয়েও দেয়, সেটা ক্লিন করার জন্য একটি ছোট ফিল্টার
+        # স্পেশাল ক্যারেক্টার ক্লিন করার লজিক
         clean_text = response.text.replace('*', '').replace('#', '').replace('_', '').replace('`', '')
         
         # নিশ্চিত করা হচ্ছে যে শেষে Synapse-OS এর সিগনেচার থাকে
