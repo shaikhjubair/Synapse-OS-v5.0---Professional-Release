@@ -1375,20 +1375,26 @@ window.preFetchGuideline = async function(disease, vitals) {
     const patAge = document.getElementById('pat-age')?.value || 'Not Provided';
     const patGenderBox = document.getElementById('pat-gender');
     const patGender = patGenderBox ? patGenderBox.options[patGenderBox.selectedIndex].text : 'Not Provided';
+    const loc = localStorage.getItem('userLoc') || userLocation || 'Dhaka, Bangladesh'; // 🚀 NEW: লোকেশন নেওয়া হচ্ছে
     
-    const safeId = disease.replace(/\s/g, ''); // স্পেস সরিয়ে আইডি বানানো
+    const safeId = disease.replace(/\s/g, ''); 
     
     try {
-        console.log(`[Synapse OS] Background pre-fetching guideline for: ${disease}...`);
+        console.log(`[Synapse OS] Background pre-fetching guideline for: ${disease} in ${loc}...`);
         const response = await fetch(CONFIG.apiEndpoint.replace('/predict', '/generate_guideline'), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ disease: disease, vitals: vitals, age: patAge, gender: patGender })
+            body: JSON.stringify({ 
+                disease: disease, 
+                vitals: vitals, 
+                age: patAge, 
+                gender: patGender,
+                location: loc  // 🚀 NEW: ব্যাকএন্ডে লোকেশন পাঠানো হচ্ছে
+            })
         });
         
         const data = await response.json();
         if(data.status === 'success') {
-            // ব্রাউজারের লোকাল স্টোরেজে সেভ করে রাখা হচ্ছে
             localStorage.setItem('prefetchedGuideline_' + safeId, data.guideline);
             console.log(`[Synapse OS] Guideline for ${disease} cached successfully!`);
         }
