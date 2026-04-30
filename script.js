@@ -765,14 +765,18 @@ window.runUniversalTriageAnalysis = async function(e) {
         const result = await response.json();
 
         // ৪. রেজাল্ট প্রোসেসিং
+        // ৪. রেজাল্ট প্রোসেসিং
         if (result.status === 'success') {
-            // ব্রাউজারে সেভ করে রাখা, যাতে গাইডলাইন পেজে বা প্রিন্ট করার সময় কাজে লাগে
+            // ব্রাউজারে সেভ করে রাখা
             localStorage.setItem('aiResult', JSON.stringify(result));
             localStorage.setItem('patientVitals', JSON.stringify(activePatientData));
             window.lastAIResult = result;
             
             // UI আপডেট করা
             renderAIResultUI(result);
+            
+            // 🚀 NEW: রেজাল্ট আসার সাথে সাথেই ব্যাকগ্রাউন্ডে গাইডলাইন ফেচ করা শুরু হবে!
+            preFetchGuideline(result.disease, activePatientData);
             
             // স্ক্রিনটা অটোমেটিক স্ক্রল করে রেজাল্টের কাছে নিয়ে যাওয়া
             const resultWidget = document.querySelector('.widget-result');
@@ -1362,4 +1366,33 @@ window.simulateDigitalTwin = function() {
         // রেজাল্ট দেখানোর পর স্ক্রল করে বাটনের কাছে নিয়ে যাবে
         container.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }, 2500); 
+};
+
+// ==========================================
+// BACKGROUND PRE-FETCHING (GUIDELINE)
+// ==========================================
+window.preFetchGuideline = async function(disease, vitals) {
+    const patAge = document.getElementById('pat-age')?.value || 'Not Provided';
+    const patGenderBox = document.getElementById('pat-gender');
+    const patGender = patGenderBox ? patGenderBox.options[patGenderBox.selectedIndex].text : 'Not Provided';
+    
+    const safeId = disease.replace(/\s/g, ''); // স্পেস সরিয়ে আইডি বানানো
+    
+    try {
+        console.log(`[Synapse OS] Background pre-fetching guideline for: ${disease}...`);
+        const response = await fetch(CONFIG.apiEndpoint.replace('/predict', '/generate_guideline'), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ disease: disease, vitals: vitals, age: patAge, gender: patGender })
+        });
+        
+        const data = await response.json();
+        if(data.status === 'success') {
+            // ব্রাউজারের লোকাল স্টোরেজে সেভ করে রাখা হচ্ছে
+            localStorage.setItem('prefetchedGuideline_' + safeId, data.guideline);
+            console.log(`[Synapse OS] Guideline for ${disease} cached successfully!`);
+        }
+    } catch (error) {
+        console.error("Prefetch failed:", error);
+    }
 };
