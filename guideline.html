@@ -143,9 +143,9 @@
         }
     }
 
-    async function fetchRealAIGuideline(disease, safeId, loc) {
+ async function fetchRealAIGuideline(disease, safeId, loc) {
         try {
-            // সার্ভারকে কল করা হচ্ছে (এসময় স্ক্রিনে অ্যানিমেশন ও ডামি টেক্সট দেখাচ্ছে)
+            // সার্ভারকে কল করা হচ্ছে
             const response = await fetch('https://synapse-os-v5-0-professional-release.onrender.com/generate_guideline', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -154,43 +154,56 @@
                 })
             });
 
-            if (response.ok) {
-                const data = await response.json();
-                
-                // রিয়েল এআই রিপোর্ট চলে আসলে (100 ক্যারেক্টারের বেশি হলে)
-                if (data.status === 'success' && data.guideline.length > 100) { 
-                    const realHtml = formatClinicalText(data.guideline);
-                    const textBox = document.getElementById(`ai-text-${safeId}`);
-                    const banner = document.getElementById(`ai-banner-${safeId}`);
+            // 🚀 THE BUG FIX: যদি Vercel টাইমআউট মারে (504) বা কোনো এরর হয়, জোর করে catch ব্লকে পাঠাব!
+            if (!response.ok) {
+                throw new Error("Server Timeout or Error");
+            }
 
-                    // 🚀 ম্যাজিক অ্যানিমেশন: ডামি টেক্সট মুছে রিয়েল এআই টেক্সট আসবে
-                    textBox.style.opacity = '0';
-                    setTimeout(() => {
-                        textBox.innerHTML = realHtml; // রিয়েল এআই ডেটা বসল
-                        banner.innerHTML = `<i class="ri-check-double-line" style="color: var(--success); font-size: 1.2rem;"></i> AI Deep Analysis Complete`;
-                        banner.style.background = "rgba(16, 185, 129, 0.1)";
-                        banner.style.color = "var(--success)";
-                        banner.style.borderLeftColor = "var(--success)";
-                        
-                        textBox.style.opacity = '1';
+            const data = await response.json();
+            
+            // রিয়েল এআই রিপোর্ট চলে আসলে (100 ক্যারেক্টারের বেশি হলে)
+            if (data.status === 'success' && data.guideline && data.guideline.length > 100) { 
+                const realHtml = formatClinicalText(data.guideline);
+                const textBox = document.getElementById(`ai-text-${safeId}`);
+                const banner = document.getElementById(`ai-banner-${safeId}`);
 
-                        // ৩ সেকেন্ড পর ব্যানারটা সুন্দর করে সরিয়ে দেবে
-                        setTimeout(() => { 
-                            banner.style.transition = 'opacity 0.5s';
-                            banner.style.opacity = '0';
-                            setTimeout(() => banner.style.display = 'none', 500);
-                        }, 3000);
-                    }, 600);
-                }
+                // ম্যাজিক অ্যানিমেশন: ডামি টেক্সট মুছে রিয়েল এআই টেক্সট আসবে
+                textBox.style.opacity = '0';
+                setTimeout(() => {
+                    textBox.innerHTML = realHtml; // রিয়েল এআই ডেটা বসল
+                    banner.innerHTML = `<i class="ri-check-double-line" style="color: var(--success); font-size: 1.2rem;"></i> AI Deep Analysis Complete`;
+                    banner.style.background = "rgba(16, 185, 129, 0.1)";
+                    banner.style.color = "var(--success)";
+                    banner.style.borderLeftColor = "var(--success)";
+                    
+                    textBox.style.opacity = '1';
+
+                    // ৩ সেকেন্ড পর ব্যানারটা সুন্দর করে সরিয়ে দেবে
+                    setTimeout(() => { 
+                        banner.style.transition = 'opacity 0.5s';
+                        banner.style.opacity = '0';
+                        setTimeout(() => banner.style.display = 'none', 500);
+                    }, 3000);
+                }, 600);
+            } else {
+                throw new Error("Invalid AI response"); // যদি ডেটা ঠিকমতো না আসে
             }
         } catch (error) {
-            console.error("AI Server Timeout, keeping baseline protocol:", error);
-            // সার্ভার ক্র্যাশ করলে ব্যানারটা সরিয়ে শুধু ডামি টেক্সট রেখে দেবে
+            console.error("AI Server Timeout, activating fallback mode:", error);
+            
+            // 🚀 THE ULTIMATE FALLBACK FIX: সার্ভার ক্র্যাশ বা টাইমআউট করলে ব্যানারটা গায়েব করে দেবে!
             const banner = document.getElementById(`ai-banner-${safeId}`);
-            if(banner) banner.style.display = 'none';
+            if (banner) {
+                banner.style.display = 'none'; // ঘুরন্ত স্পিনারটা বন্ধ হয়ে যাবে
+            }
+            
+            const textBox = document.getElementById(`ai-text-${safeId}`);
+            if (textBox) {
+                textBox.style.opacity = '1'; // আগে থেকে থাকা ডামি টেক্সটটা ক্লিয়ারলি দেখা যাবে
+            }
         }
     }
-
+    
     window.onload = function() {
         if (!localStorage.getItem('aiResult')) {
             guidelineArea.innerHTML = `<p style="color: var(--danger); text-align:center; padding: 20px;">⚠️ No clinical data found. Go back and run AI analysis.</p>`;
