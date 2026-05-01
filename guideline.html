@@ -96,7 +96,17 @@
 
         let primaryRisk = parseFloat(aiResult.probability) || 0;
         let combinedAlerts = [];
-        if (primaryRisk >= 40) combinedAlerts.push({ disease: aiResult.disease, probability: aiResult.probability });
+        
+        if (primaryRisk >= 40) {
+            combinedAlerts.push({ disease: aiResult.disease, probability: aiResult.probability });
+        }
+
+        // 🚀 FIX: সেকেন্ডারি রোগগুলোর লুপ অ্যাড করা হলো
+        if (aiResult.secondary_alerts && aiResult.secondary_alerts.length > 0) {
+            aiResult.secondary_alerts.forEach(alert => {
+                combinedAlerts.push({ disease: alert.disease, probability: alert.probability });
+            });
+        }
 
         const loc = localStorage.getItem('userLoc') || 'Dhaka, Bangladesh';
 
@@ -133,64 +143,49 @@
         }
     }
 
- async function fetchRealAIGuideline(disease, safeId, loc) {
-        const cachedGuideline = localStorage.getItem('prefetchedGuideline_' + safeId);
-        let aiText = "";
-        let fetchSuccess = false;
+    async function fetchRealAIGuideline(disease, safeId, loc) {
+        try {
+            // সার্ভারকে কল করা হচ্ছে (এসময় স্ক্রিনে অ্যানিমেশন ও ডামি টেক্সট দেখাচ্ছে)
+            const response = await fetch('https://synapse-os-v5-0-professional-release.onrender.com/generate_guideline', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    disease: disease, vitals: patientVitals, age: patientAge, gender: patientGender, location: loc
+                })
+            });
 
-        if (cachedGuideline && cachedGuideline.length > 200) {
-            console.log("Found cached AI response! Adding artificial delay for UI effect...");
-            aiText = cachedGuideline;
-            fetchSuccess = true;
-            // 🚀 FIX: ক্যাশ থেকে পেলেও আমরা ২ সেকেন্ড অপেক্ষা করব, যাতে ইউজার সুন্দর অ্যানিমেশনটা দেখতে পায়!
-            await new Promise(r => setTimeout(r, 2000)); 
-        } else {
-            try {
-                const response = await fetch('https://synapse-os-v5-0-professional-release.onrender.com/generate_guideline', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        disease: disease, vitals: patientVitals, age: patientAge, gender: patientGender, location: loc
-                    })
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.status === 'success' && data.guideline.length > 200) {
-                        aiText = data.guideline;
-                        fetchSuccess = true;
-                    }
-                }
-            } catch (error) {
-                console.error("AI Server Timeout, keeping baseline protocol:", error);
-            }
-        }
-
-        if (fetchSuccess) {
-            const realHtml = formatClinicalText(aiText);
-            const textBox = document.getElementById(`ai-text-${safeId}`);
-            const banner = document.getElementById(`ai-banner-${safeId}`);
-
-            // 3. ম্যাজিক অ্যানিমেশন (Fade out -> Change text -> Fade in)
-            textBox.style.opacity = '0';
-            setTimeout(() => {
-                textBox.innerHTML = realHtml;
-                banner.innerHTML = `<i class="ri-check-double-line" style="color: var(--success); font-size: 1.2rem;"></i> AI Deep Analysis Complete`;
-                banner.style.background = "rgba(16, 185, 129, 0.1)";
-                banner.style.color = "var(--success)";
-                banner.style.borderLeftColor = "var(--success)";
+            if (response.ok) {
+                const data = await response.json();
                 
-                textBox.style.opacity = '1';
+                // রিয়েল এআই রিপোর্ট চলে আসলে (100 ক্যারেক্টারের বেশি হলে)
+                if (data.status === 'success' && data.guideline.length > 100) { 
+                    const realHtml = formatClinicalText(data.guideline);
+                    const textBox = document.getElementById(`ai-text-${safeId}`);
+                    const banner = document.getElementById(`ai-banner-${safeId}`);
 
-                // ৩ সেকেন্ড পর ব্যানারটা সুন্দর করে সরিয়ে দেবে
-                setTimeout(() => { 
-                    banner.style.transition = 'opacity 0.5s';
-                    banner.style.opacity = '0';
-                    setTimeout(() => banner.style.display = 'none', 500);
-                }, 3000);
-            }, 600);
-        } else {
-            // যদি সার্ভার পুরোপুরি ফেইল করে, তাহলে ডামি টেক্সটটাই থেকে যাবে
+                    // 🚀 ম্যাজিক অ্যানিমেশন: ডামি টেক্সট মুছে রিয়েল এআই টেক্সট আসবে
+                    textBox.style.opacity = '0';
+                    setTimeout(() => {
+                        textBox.innerHTML = realHtml; // রিয়েল এআই ডেটা বসল
+                        banner.innerHTML = `<i class="ri-check-double-line" style="color: var(--success); font-size: 1.2rem;"></i> AI Deep Analysis Complete`;
+                        banner.style.background = "rgba(16, 185, 129, 0.1)";
+                        banner.style.color = "var(--success)";
+                        banner.style.borderLeftColor = "var(--success)";
+                        
+                        textBox.style.opacity = '1';
+
+                        // ৩ সেকেন্ড পর ব্যানারটা সুন্দর করে সরিয়ে দেবে
+                        setTimeout(() => { 
+                            banner.style.transition = 'opacity 0.5s';
+                            banner.style.opacity = '0';
+                            setTimeout(() => banner.style.display = 'none', 500);
+                        }, 3000);
+                    }, 600);
+                }
+            }
+        } catch (error) {
+            console.error("AI Server Timeout, keeping baseline protocol:", error);
+            // সার্ভার ক্র্যাশ করলে ব্যানারটা সরিয়ে শুধু ডামি টেক্সট রেখে দেবে
             const banner = document.getElementById(`ai-banner-${safeId}`);
             if(banner) banner.style.display = 'none';
         }
