@@ -775,8 +775,6 @@ window.runUniversalTriageAnalysis = async function(e) {
             // UI আপডেট করা
             renderAIResultUI(result);
             
-            // 🚀 NEW: রেজাল্ট আসার সাথে সাথেই ব্যাকগ্রাউন্ডে গাইডলাইন ফেচ করা শুরু হবে!
-            preFetchGuideline(result.disease, activePatientData);
             
             // স্ক্রিনটা অটোমেটিক স্ক্রল করে রেজাল্টের কাছে নিয়ে যাওয়া
             const resultWidget = document.querySelector('.widget-result');
